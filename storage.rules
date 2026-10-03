@@ -1,0 +1,39 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner() {
+      return signedIn()
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'owner'
+        && get(/databases/(default)/documents/users/$(request.auth.uid)).data.get('approvalStatus', 'approved') == 'approved';
+    }
+
+    function isCustomer() {
+      return signedIn() && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'customer';
+    }
+
+    function isAdmin() {
+      return signedIn() && get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /profile_images/{uid}/{fileName} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if signedIn() && request.auth.uid == uid && fileName.matches('.*\\.(jpg|jpeg|png|webp)');
+    }
+
+    match /bus_images/{uid}/{fileName} {
+      allow read: if signedIn();
+      allow write: if isOwner()
+        && request.auth.uid == uid
+        && fileName.matches('.*\\.(jpg|jpeg|png|webp)');
+    }
+
+    match /{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}

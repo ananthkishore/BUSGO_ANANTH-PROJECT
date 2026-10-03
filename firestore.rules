@@ -1,0 +1,182 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return signedIn() && userRole() == 'admin';
+    }
+
+    function isOwner() {
+      return signedIn()
+        && userRole() == 'owner'
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('approvalStatus', 'approved') == 'approved';
+    }
+
+    function isCustomer() {
+      return signedIn() && userRole() == 'customer';
+    }
+
+    function selectedBusMatchesOwner(busId, ownerId) {
+      return signedIn()
+        && !busId.matches('^\\s*$')
+        && exists(/databases/$(database)/documents/buses/$(busId))
+        && get(/databases/$(database)/documents/buses/$(busId)).data.ownerId == ownerId
+        && get(/databases/$(database)/documents/buses/$(busId)).data.status == 'approved';
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn()
+        && (request.auth.uid == userId || isAdmin() || resource.data.role == 'admin');
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.role in ['customer', 'owner'];
+      allow update: if isAdmin()
+        || (request.auth.uid == userId
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.get('approvalStatus', null) == resource.data.get('approvalStatus', null));
+      allow delete: if isAdmin();
+    }
+
+    match /buses/{busId} {
+      allow read: if signedIn()
+        && (isAdmin() || resource.data.status == 'approved'
+          || resource.data.ownerId == request.auth.uid);
+      allow create: if isOwner()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.status == 'pending_approval';
+      allow update: if isAdmin()
+        || (isOwner()
+          && resource.data.ownerId == request.auth.uid
+          && request.resource.data.ownerId == resource.data.ownerId
+          && request.resource.data.status == resource.data.status
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'pendingUpdate',
+            'pendingUpdateStatus',
+            'pendingUpdateReason',
+            'pendingUpdateSubmittedAt',
+            'updatedAt'
+          ])
+          && request.resource.data.pendingUpdateStatus == 'pending_approval');
+      allow delete: if isAdmin()
+        || (isOwner() && resource.data.ownerId == request.auth.uid);
+    }
+
+    match /booking_requests/{requestId} {
+      allow create: if isCustomer()
+        && request.resource.data.customerId == request.auth.uid
+        && request.resource.data.ownerId != null
+        && request.resource.data.ownerId != ''
+        && selectedBusMatchesOwner(
+          request.resource.data.busId,
+          request.resource.data.ownerId,
+        )
+        && request.resource.data.status == 'PENDING_OWNER';
+      allow read: if signedIn()
+        && (resource == null
+          || resource.data.customerId == request.auth.uid
+          || resource.data.ownerId == request.auth.uid
+          || isAdmin());
+      allow update: if isAdmin()
+        || (isOwner()
+          && resource.data.ownerId == request.auth.uid
+          && ((resource.data.status == 'PENDING_OWNER'
+                && request.resource.data.status in ['OWNER_ACCEPTED', 'OWNER_REJECTED'])
+            || (resource.data.status == 'OWNER_ACCEPTED'
+                && request.resource.data.status == 'ADMIN_REVIEW')))
+        || (isCustomer()
+          && resource.data.customerId == request.auth.uid
+          && (
+            (
+              resource.data.status == 'PAYMENT_REQUIRED'
+              && resource.data.paymentStatus == 'REQUESTED'
+              && request.resource.data.status == resource.data.status
+              && request.resource.data.paymentStatus == 'SUBMITTED'
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                'paymentStatus', 'paymentReference', 'paymentSubmittedAt', 'updatedAt'
+              ])
+            )
+            || (
+              resource.data.customerId == request.auth.uid
+              && resource.data.status in ['CONFIRMED', 'COMPLETED']
+              && resource.data.endDate <= request.time
+              && request.resource.data.status in [resource.data.status, 'COMPLETED']
+              && request.resource.data.reviewRating is int
+              && request.resource.data.reviewRating >= 1
+              && request.resource.data.reviewRating <= 5
+              && request.resource.data.reviewFeedback is string
+              && request.resource.data.reviewSubmittedAt != null
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                'reviewRating', 'reviewFeedback', 'reviewSubmittedAt', 'status', 'updatedAt'
+              ])
+            )
+          ));
+      allow delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && resource.data.recipientId == request.auth.uid;
+      allow update: if signedIn()
+        && (
+          (resource.data.recipientId == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']))
+          || (isAdmin()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['createdAt']))
+          || (request.resource.data.relatedBookingId != null
+            && get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.customerId == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['createdAt']))
+          || (request.resource.data.relatedBookingId != null
+            && get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.ownerId == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['createdAt']))
+        );
+      allow create: if isAdmin()
+        || (signedIn()
+          && request.resource.data.relatedBookingId != null
+          && exists(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId))
+          && (
+            get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.customerId == request.auth.uid
+            || get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.ownerId == request.auth.uid
+            || (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+          )
+          && (
+            request.resource.data.recipientId == get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.customerId
+            || request.resource.data.recipientId == get(/databases/$(database)/documents/booking_requests/$(request.resource.data.relatedBookingId)).data.ownerId
+            || get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.role == 'admin'
+          ))
+        || (signedIn()
+          && request.resource.data.relatedBusId != null
+          && exists(/databases/$(database)/documents/buses/$(request.resource.data.relatedBusId))
+          && (
+            isAdmin()
+            || (
+              get(/databases/$(database)/documents/buses/$(request.resource.data.relatedBusId)).data.ownerId == request.auth.uid
+              && get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.role == 'admin'
+            )
+          ))
+        || (signedIn()
+          && userRole() == 'owner'
+          && request.resource.data.type == 'owner_message'
+          && request.resource.data.ownerId == request.auth.uid
+          && request.resource.data.recipientId is string
+          && get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.get('role', null) == 'admin'
+          && request.resource.data.message is string
+          && request.resource.data.message.size() > 0
+          && request.resource.data.message.size() <= 2000
+          && request.resource.data.isRead == false
+          && request.resource.data.relatedBookingId == null
+          && request.resource.data.relatedBusId == null);
+      allow delete: if false;
+    }
+
+    match /admin_invites/{inviteId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
