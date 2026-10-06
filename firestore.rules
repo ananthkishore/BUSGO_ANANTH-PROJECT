@@ -24,6 +24,11 @@ service cloud.firestore {
       return signedIn() && userRole() == 'customer';
     }
 
+    function isSupportParticipant() {
+      return signedIn()
+        && userRole() in ['customer', 'owner'];
+    }
+
     function selectedBusMatchesOwner(busId, ownerId) {
       return signedIn()
         && !busId.matches('^\\s*$')
@@ -121,6 +126,71 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    match /support_conversations/{conversationId} {
+      allow create: if isSupportParticipant()
+        && request.auth.uid == conversationId
+        && request.resource.data.participantId == request.auth.uid
+        && request.resource.data.participantRole == userRole()
+        && request.resource.data.participantName is string
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.keys().hasOnly([
+          'participantId', 'participantRole', 'participantName', 'createdAt'
+        ]);
+      allow read: if isAdmin()
+        || (signedIn() && request.auth.uid == conversationId);
+      allow update, delete: if false;
+
+      match /messages/{messageId} {
+        function conversationData() {
+          return get(/databases/$(database)/documents/support_conversations/$(conversationId)).data;
+        }
+
+        allow read: if isAdmin()
+          || (signedIn() && request.auth.uid == conversationId);
+        allow create: if signedIn()
+          && request.resource.data.conversationId == conversationId
+          && request.resource.data.message is string
+          && request.resource.data.message.size() > 0
+          && request.resource.data.message.size() <= 2000
+          && request.resource.data.senderName is string
+          && request.resource.data.isRead == false
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.keys().hasOnly([
+            'conversationId', 'senderId', 'senderRole', 'senderName',
+            'receiverId', 'receiverRole', 'message', 'isRead', 'createdAt'
+          ])
+          && (
+            (isSupportParticipant()
+              && request.auth.uid == conversationId
+              && request.resource.data.senderId == request.auth.uid
+              && request.resource.data.senderRole == userRole()
+              && conversationData().participantId == request.auth.uid
+              && conversationData().participantRole == userRole()
+              && request.resource.data.receiverRole == 'admin'
+              && get(/databases/$(database)/documents/users/$(request.resource.data.receiverId)).data.role == 'admin')
+            || (isAdmin()
+              && request.resource.data.senderId == request.auth.uid
+              && request.resource.data.senderRole == 'admin'
+              && request.resource.data.receiverId == conversationId
+              && request.resource.data.receiverRole == conversationData().participantRole
+              && conversationData().participantId == conversationId
+              && conversationData().participantRole in ['customer', 'owner'])
+          );
+        allow update: if signedIn()
+          && resource.data.isRead == false
+          && request.resource.data.isRead == true
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead'])
+          && resource.data.senderId != request.auth.uid
+          && (
+            (isAdmin()
+              && resource.data.senderRole in ['customer', 'owner'])
+            || (request.auth.uid == conversationId
+              && resource.data.senderRole == 'admin')
+          );
+        allow delete: if false;
+      }
+    }
+
     match /notifications/{notificationId} {
       allow read: if signedIn() && resource.data.recipientId == request.auth.uid;
       allow update: if signedIn()
@@ -163,7 +233,27 @@ service cloud.firestore {
         || (signedIn()
           && userRole() == 'owner'
           && request.resource.data.type == 'owner_message'
-          && request.resource.data.ownerId == request.auth.uid
+          && (
+            request.resource.data.senderId == request.auth.uid
+            || request.resource.data.ownerId == request.auth.uid
+            || request.resource.data.relatedOwnerId == request.auth.uid
+          )
+          && request.resource.data.recipientId is string
+          && get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.get('role', null) == 'admin'
+          && request.resource.data.message is string
+          && request.resource.data.message.size() > 0
+          && request.resource.data.message.size() <= 2000
+          && request.resource.data.isRead == false
+          && request.resource.data.relatedBookingId == null
+          && request.resource.data.relatedBusId == null)
+        || (signedIn()
+          && userRole() == 'customer'
+          && request.resource.data.type == 'customer_message'
+          && (
+            request.resource.data.senderId == request.auth.uid
+            || request.resource.data.customerId == request.auth.uid
+            || request.resource.data.relatedCustomerId == request.auth.uid
+          )
           && request.resource.data.recipientId is string
           && get(/databases/$(database)/documents/users/$(request.resource.data.recipientId)).data.get('role', null) == 'admin'
           && request.resource.data.message is string

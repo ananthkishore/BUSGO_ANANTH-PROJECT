@@ -121,7 +121,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
     final actionable = request.status == BookingRequestStatus.pendingOwner;
     final owner = context.watch<AuthProvider>().currentUser;
     return Scaffold(
-      backgroundColor: BusGoTokens.canvas,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: StreamBuilder<List<BusModel>>(
           stream: context.read<BusRepository>().watchForOwner(request.ownerId),
@@ -137,7 +137,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                     IconButton(
                       onPressed: () => Navigator.of(context).maybePop(),
                       icon: const Icon(Icons.arrow_back_rounded),
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     const SizedBox(width: 2),
                     Expanded(child: BusGoBrandMark(compact: true)),
@@ -152,16 +152,16 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                 Text(
                   'Trip Details',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Complete information about this trip',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 _tripOverview(request),
@@ -218,7 +218,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -233,7 +233,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
           Text(
             '${_date(request.startDate)}  |  ${_time(request.startDate)}',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -273,9 +273,9 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
       margin: const EdgeInsets.only(right: 7),
       padding: const EdgeInsets.all(9),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F9FF),
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2ECF8)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,7 +287,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -296,7 +296,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 10,
             ),
           ),
@@ -372,7 +372,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                         ),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
-                              color: BusGoTokens.navy,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -382,7 +382,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                       Text(
                         '${bus.capacity} Seats  |  ${bus.isAc ? 'AC' : 'Non-AC'}  |  ${_fallback(bus.busType, 'Bus')}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -465,15 +465,15 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
                   '${_date(date)}  ${_time(date)}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -501,23 +501,23 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                   Text(
                     'Payment Details',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     '₹${request.estimatedAmount.toStringAsFixed(0)}  ·  ${request.paymentStatus.label}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (paymentReference.isNotEmpty)
                     Text(
                       'Reference: $paymentReference',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   if (request.paymentStatus == PaymentStatus.submitted)
                     Text(
@@ -538,9 +538,9 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
                   if (request.paymentSubmittedAt != null)
                     Text(
                       'Submitted: ${_date(request.paymentSubmittedAt!)} ${_time(request.paymentSubmittedAt!)}',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                 ],
               ),
@@ -613,7 +613,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -632,7 +632,7 @@ class _OwnerRequestDetailsScreenState extends State<OwnerRequestDetailsScreen> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),

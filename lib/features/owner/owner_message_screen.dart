@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
@@ -23,6 +24,8 @@ class _OwnerMessageScreenState extends State<OwnerMessageScreen> {
   }
 
   Future<void> _sendMessage() async {
+    if (_isSending) return;
+
     final message = _messageController.text.trim();
     if (message.isEmpty) {
       _showMessage('Write a message before sending.');
@@ -35,13 +38,20 @@ class _OwnerMessageScreenState extends State<OwnerMessageScreen> {
       return;
     }
 
+    final role = user.role.name.toLowerCase();
+    if (role != 'owner' && role != 'customer') {
+      _showMessage('Only owner and customer accounts can contact BUSGO admin.');
+      return;
+    }
+
     setState(() => _isSending = true);
     try {
       final recipientCount = await context
           .read<NotificationRepository>()
-          .sendOwnerMessageToAdmins(
-            ownerId: user.uid,
-            ownerName: user.name,
+          .sendMessageToAdmins(
+            senderRole: role,
+            senderId: user.uid,
+            senderName: user.name,
             message: message,
           );
       if (!mounted) return;
@@ -51,8 +61,13 @@ class _OwnerMessageScreenState extends State<OwnerMessageScreen> {
       }
       _messageController.clear();
       _showMessage('Your message was sent to the BUSGO admin.');
-    } catch (_) {
-      if (mounted) _showMessage('Unable to send your message. Please retry.');
+      context.push('/support/${user.uid}');
+    } catch (error) {
+      if (!mounted) return;
+      final messageText = error is Exception
+          ? error.toString().replaceFirst('Exception: ', '')
+          : 'Unable to send your message. Please retry.';
+      _showMessage(messageText);
     } finally {
       if (mounted) setState(() => _isSending = false);
     }

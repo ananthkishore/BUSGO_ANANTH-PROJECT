@@ -231,7 +231,7 @@ class _OwnerEditBusScreenState extends State<OwnerEditBusScreen> {
       ),
       builder: (context, snapshot) {
         return Scaffold(
-          backgroundColor: BusGoTokens.canvas,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: SafeArea(
             child: snapshot.hasError
                 ? BusGoErrorState(
@@ -293,7 +293,7 @@ class _OwnerEditBusScreenState extends State<OwnerEditBusScreen> {
                       'Edit Bus',
                       style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
-                            color: BusGoTokens.navy,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w900,
                           ),
                     ),

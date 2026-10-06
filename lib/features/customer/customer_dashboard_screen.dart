@@ -179,7 +179,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
               Text(
                 'Travel Together, Go Further',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: BusGoTokens.muted,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -210,16 +210,22 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   }
 
   Widget _heroCard(String name) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 20, 18, 18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEAFBFB), Color(0xFFF7FBFF)],
+          colors: isDark
+              ? [colorScheme.surfaceContainer, colorScheme.surfaceContainerHigh]
+              : const [Color(0xFFEAFBFB), Color(0xFFF7FBFF)],
         ),
-        border: Border.all(color: const Color(0xFFDBF5F4)),
+        border: Border.all(
+          color: BusGoTokens.teal,
+        ),
       ),
       child: Row(
         children: [
@@ -230,7 +236,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 Text(
                   'Hi $name,',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.muted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -238,7 +244,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 Text(
                   'Plan Your\nNext Trip',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: const Color(0xFF0F2747),
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                     height: 1.1,
                   ),
@@ -247,7 +253,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 Text(
                   'Book entire buses for festivals,\ncolleges, companies and more.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.muted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.4,
                   ),
                 ),
@@ -368,9 +374,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
               width: 160,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFE1EAF5)),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x0A102C4A),
@@ -385,7 +393,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEAF8F8),
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(category.$2, color: BusGoTokens.blue, size: 20),
@@ -396,7 +404,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       category.$1,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF102A43),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -521,17 +529,19 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     final userName = _safeCustomerFirstName(
       context.read<AuthProvider>().currentUser?.name,
     );
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFE5EDF7)),
-        boxShadow: const [
+        border: Border.all(color: BusGoTokens.teal),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0D102C4A),
+            color: colorScheme.shadow.withValues(alpha: 0.18),
             blurRadius: 24,
-            offset: Offset(0, 10),
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -543,36 +553,36 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             Text(
               'Where are you heading, $userName?',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: const Color(0xFF102A43),
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w800,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               'Book an entire bus for your next group journey.',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF8F8),
+                color: colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.directions_bus_rounded,
-                    color: Color(0xFF0A7C82),
+                    color: colorScheme.primary,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'Whole-bus charter search',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: const Color(0xFF0A7C82),
+                      color: colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -582,7 +592,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             const SizedBox(height: 14),
             TextFormField(
               controller: _pickupController,
-              style: const TextStyle(color: Color(0xFF102A43)),
+              style: TextStyle(color: colorScheme.onSurface),
               decoration: _searchDecoration(
                 'From',
                 'Select location',
@@ -606,7 +616,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             const SizedBox(height: 2),
             TextFormField(
               controller: _destinationController,
-              style: const TextStyle(color: Color(0xFF102A43)),
+              style: TextStyle(color: colorScheme.onSurface),
               decoration: _searchDecoration(
                 'To',
                 'Select location',
@@ -635,7 +645,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 final passengers = TextFormField(
                   controller: _passengersController,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Color(0xFF102A43)),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   decoration: _searchDecoration(
                     'Passengers',
                     'Select count',
@@ -679,7 +691,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
               initialValue: _tripTypes.contains(_tripType)
                   ? _tripType
                   : _tripTypes.first,
-              dropdownColor: Colors.white,
+              dropdownColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               isExpanded: true,
               decoration: _searchDecoration(
                 'Trip type',
@@ -699,7 +713,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
               child: FilledButton.icon(
                 onPressed: _searchBuses,
                 style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF0E9AA2),
+                  backgroundColor: BusGoTokens.teal,
                   foregroundColor: Colors.white,
                   minimumSize: const Size.fromHeight(52),
                   shape: RoundedRectangleBorder(
@@ -722,53 +736,55 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     );
   }
 
-  InputDecoration _searchDecoration(String label, String hint, IconData icon) =>
-      InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, color: BusGoTokens.blue),
-        filled: true,
-        fillColor: const Color(0xFFF4F8FB),
-        labelStyle: const TextStyle(color: Color(0xFF102A43)),
-        hintStyle: const TextStyle(color: Color(0xFF6F7F97)),
-        prefixIconColor: BusGoTokens.blue,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFE1EAF5)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFF0E9AA2), width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFB42318)),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Color(0xFFB42318), width: 1.5),
-        ),
-      );
+  InputDecoration _searchDecoration(String label, String hint, IconData icon) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      prefixIcon: Icon(icon, color: colorScheme.primary),
+      filled: true,
+      fillColor: colorScheme.surfaceContainerHighest,
+      labelStyle: TextStyle(color: colorScheme.onSurface),
+      hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+      prefixIconColor: colorScheme.primary,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: colorScheme.outlineVariant),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: colorScheme.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: colorScheme.error, width: 1.5),
+      ),
+    );
+  }
 
-  Widget _searchDateButton(String label, DateTime? date, bool isStart) =>
-      OutlinedButton.icon(
-        onPressed: () => _chooseSearchDate(isStart: isStart),
-        icon: const Icon(Icons.calendar_today_rounded, color: BusGoTokens.blue),
-        label: Text(
-          date == null ? label : '${date.day}/${date.month}/${date.year}',
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(color: Color(0xFF102A43)),
-        ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFF102A43),
-          side: const BorderSide(color: Color(0xFFE1EAF5)),
-          backgroundColor: const Color(0xFFF4F8FB),
-          minimumSize: const Size.fromHeight(56),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-      );
+  Widget _searchDateButton(String label, DateTime? date, bool isStart) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return OutlinedButton.icon(
+      onPressed: () => _chooseSearchDate(isStart: isStart),
+      icon: Icon(Icons.calendar_today_rounded, color: colorScheme.primary),
+      label: Text(
+        date == null ? label : '${date.day}/${date.month}/${date.year}',
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: colorScheme.onSurface),
+      ),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colorScheme.onSurface,
+        side: BorderSide(color: colorScheme.outlineVariant),
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        minimumSize: const Size.fromHeight(56),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
 
   Future<void> _chooseSearchDate({required bool isStart}) async {
     final date = await showDatePicker(
@@ -1062,6 +1078,23 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     debugPrint('reviewId: null');
     debugPrint('destination: ${notification.type}');
     debugPrint('[/BUSGO NOTIFICATION TAP]');
+    final conversationId = notification.conversationId?.trim();
+    if (conversationId != null &&
+        conversationId.isNotEmpty &&
+        (notification.type == 'support_reply' ||
+            notification.type == 'customer_message' ||
+            notification.type == 'owner_message')) {
+      if (conversationId != customerId) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You cannot access this support conversation.'),
+          ),
+        );
+        return;
+      }
+      context.push('/support/$conversationId');
+      return;
+    }
     if (bookingId != null && bookingId.isNotEmpty) {
       try {
         final request = await context.read<BookingRequestRepository>().getById(
@@ -1149,7 +1182,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 Text(
                   'Account & support',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -1321,7 +1354,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -1341,8 +1374,8 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 onPressed: () => context.push('/edit-profile'),
                 icon: const Icon(Icons.edit_outlined),
                 style: IconButton.styleFrom(
-                  foregroundColor: BusGoTokens.blue,
-                  backgroundColor: const Color(0xFFEAF8F8),
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 ),
               ),
             ],
@@ -1361,7 +1394,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
   Widget _profileDetailRow(IconData icon, String value) {
     return Row(
       children: [
-        Icon(icon, size: 19, color: const Color(0xFF0A7C82)),
+        Icon(
+          icon,
+          size: 19,
+          color: Theme.of(context).colorScheme.primary,
+        ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
@@ -1369,7 +1406,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -1536,12 +1573,14 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: const Color(0xFFEAF8F8),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               icon,
-              color: onTap == null ? BusGoTokens.muted : BusGoTokens.blue,
+              color: onTap == null
+                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                  : Theme.of(context).colorScheme.primary,
               size: 20,
             ),
           ),
@@ -1552,7 +1591,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           subtitle: Text(subtitle),
           trailing: Icon(
             Icons.chevron_right_rounded,
-            color: onTap == null ? BusGoTokens.muted : BusGoTokens.navy,
+            color: onTap == null
+                ? Theme.of(context).colorScheme.onSurfaceVariant
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),
@@ -1563,9 +1604,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF7FA),
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE2EDF6)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -1576,15 +1617,15 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 'Plan Another Trip?',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 'Book a whole bus for your next group journey.',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           );
@@ -1644,7 +1685,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: const Color(0xFF0F2747),
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -1722,7 +1763,11 @@ class _NextTripCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              Icon(Icons.schedule_rounded, size: 18, color: BusGoTokens.muted),
+              Icon(
+                Icons.schedule_rounded,
+                size: 18,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
               const SizedBox(width: 6),
               Text('$date • ${request.passengerCount} passengers'),
               const Spacer(),
@@ -1834,14 +1879,17 @@ class _CustomerTripCard extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.surfaceContainerHigh
+                                  .withValues(alpha: 0.96)
+                            : Colors.white.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
                         statusLabel,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: BusGoTokens.navy,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -1852,7 +1900,10 @@ class _CustomerTripCard extends StatelessWidget {
                     child: TextButton.icon(
                       onPressed: onTap,
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.white.withValues(alpha: 0.96),
+                        backgroundColor:
+                            Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.surfaceContainerHigh
+                            : Colors.white.withValues(alpha: 0.96),
                         foregroundColor: BusGoTokens.blue,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -1908,7 +1959,9 @@ class _CustomerTripCard extends StatelessWidget {
                           tripType,
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
-                                color: BusGoTokens.muted,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -1919,7 +1972,7 @@ class _CustomerTripCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 fontWeight: FontWeight.w800,
-                                color: BusGoTokens.navy,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                     ],
@@ -1981,7 +2034,7 @@ class _TripMetaChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F7FB),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -1992,7 +2045,7 @@ class _TripMetaChip extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2009,16 +2062,29 @@ class _StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final isPositive =
         status == BookingRequestStatus.paymentRequired ||
         status == BookingRequestStatus.confirmed ||
         status == BookingRequestStatus.completed;
+    final isNegative =
+        status == BookingRequestStatus.cancelled ||
+        status == BookingRequestStatus.ownerRejected ||
+        status == BookingRequestStatus.adminRejected;
     return Chip(
       label: Text(status.label),
       visualDensity: VisualDensity.compact,
-      backgroundColor: isPositive ? const Color(0xFFD1FADF) : Colors.white,
+      backgroundColor: isPositive
+          ? colorScheme.tertiaryContainer
+          : isNegative
+          ? colorScheme.errorContainer
+          : colorScheme.surfaceContainerHighest,
       labelStyle: TextStyle(
-        color: isPositive ? const Color(0xFF087443) : const Color(0xFF344054),
+        color: isPositive
+            ? colorScheme.onTertiaryContainer
+            : isNegative
+            ? colorScheme.onErrorContainer
+            : colorScheme.onSurfaceVariant,
         fontSize: 12,
         fontWeight: FontWeight.w700,
       ),
@@ -2064,6 +2130,7 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final normalizedType = notification.type.toLowerCase();
     final tint = _tintForType(normalizedType);
     final time = notification.createdAt;
@@ -2076,6 +2143,7 @@ class _NotificationCard extends StatelessWidget {
         ? 'New update from BUSGO.'
         : notification.message;
     final bookingReference = notification.relatedBookingId;
+    final isRead = notification.isRead;
 
     return InkWell(
       onTap: onTap,
@@ -2083,18 +2151,20 @@ class _NotificationCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: notification.isRead ? Colors.white : const Color(0xFFF8FBFF),
+          color: isRead
+              ? colorScheme.surfaceContainerHighest
+              : colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: notification.isRead
-                ? const Color(0xFFE5EDF7)
-                : tint.withValues(alpha: 0.3),
+            color: isRead
+                ? colorScheme.outlineVariant
+                : tint.withValues(alpha: 0.4),
           ),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x0A102C4A),
+              color: colorScheme.shadow.withValues(alpha: 0.18),
               blurRadius: 18,
-              offset: Offset(0, 8),
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -2105,7 +2175,7 @@ class _NotificationCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: tint.withValues(alpha: 0.12),
+                color: tint.withValues(alpha: isRead ? 0.12 : 0.18),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(_iconForType(normalizedType), color: tint, size: 21),
@@ -2126,7 +2196,7 @@ class _NotificationCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
                                 fontWeight: FontWeight.w800,
-                                color: BusGoTokens.navy,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                       ),
@@ -2134,7 +2204,7 @@ class _NotificationCard extends StatelessWidget {
                       Text(
                         timeLabel,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -2144,9 +2214,9 @@ class _NotificationCard extends StatelessWidget {
                     message,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (bookingReference != null &&
                       bookingReference.trim().isNotEmpty) ...[

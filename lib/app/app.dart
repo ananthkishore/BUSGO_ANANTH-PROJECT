@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
@@ -18,21 +19,27 @@ class BusGoApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => BusGoThemeController()),
         Provider(create: (_) => BusRepository()),
         Provider(create: (_) => BookingRequestRepository()),
         Provider(create: (_) => NotificationRepository()),
         Provider(create: (_) => UserRepository()),
         ChangeNotifierProvider(create: (_) => BookingWorkflowProvider()),
+        Provider<GoRouter>(
+          create: (context) => createAppRouter(context.read<AuthProvider>()),
+        ),
       ],
       child: Builder(
         builder: (context) {
-          final authProvider = context.read<AuthProvider>();
-          final router = createAppRouter(authProvider);
+          final themeController = context.watch<BusGoThemeController>();
+          final router = context.read<GoRouter>();
 
           return MaterialApp.router(
             title: 'BUSGO',
             debugShowCheckedModeBanner: false,
+            themeMode: themeController.themeMode,
             theme: BusGoTheme.light,
+            darkTheme: BusGoTheme.dark,
             routerConfig: router,
           );
         },

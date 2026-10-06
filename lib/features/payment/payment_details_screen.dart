@@ -43,7 +43,7 @@ class PaymentDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: BusGoTokens.canvas,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Payment Details'),
         leading: IconButton(
@@ -67,7 +67,7 @@ class PaymentDetailsScreen extends StatelessWidget {
                       applyHeightToLastDescent: true,
                     ),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                       height: 1.18,
                     ),
@@ -126,7 +126,7 @@ class PaymentDetailsScreen extends StatelessWidget {
                       applyHeightToLastDescent: true,
                     ),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                       height: 1.28,
                     ),
@@ -180,7 +180,7 @@ class PaymentDetailsScreen extends StatelessWidget {
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: BusGoTokens.muted,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -189,7 +189,7 @@ class PaymentDetailsScreen extends StatelessWidget {
             child: Text(
               value.trim().isEmpty ? 'Not provided' : value,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: BusGoTokens.navy,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w700,
               ),
             ),

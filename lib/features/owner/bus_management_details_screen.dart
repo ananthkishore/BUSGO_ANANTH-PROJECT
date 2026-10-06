@@ -105,7 +105,7 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
           debugPrint('[/BUSGO OWNER BUS LOAD]');
         }
         return Scaffold(
-          backgroundColor: BusGoTokens.canvas,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           body: SafeArea(
             child: CustomScrollView(
               slivers: [
@@ -177,7 +177,7 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
               Text(
                 'Travel Together, Go Further',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: BusGoTokens.muted,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -209,16 +209,16 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
                   Text(
                     'Bus Details',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'View and manage your bus information',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -255,23 +255,23 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
                         ? 'Registration not provided'
                         : bus.registrationNumber,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     bus.name.isEmpty ? 'Bus model not provided' : bus.name,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${bus.capacity} seats • ${bus.isAc ? 'AC' : 'Non-AC'}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -375,7 +375,7 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -533,9 +533,9 @@ class OwnerBusManagementDetailsScreen extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(color: BusGoTokens.navy),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(value, style: Theme.of(context).textTheme.bodyMedium),

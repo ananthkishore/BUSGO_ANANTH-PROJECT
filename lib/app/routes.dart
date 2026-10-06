@@ -7,6 +7,7 @@ import '../core/constants/app_roles.dart';
 import '../features/admin/admin_dashboard_screen.dart';
 import '../features/admin/booking_details_screen.dart';
 import '../features/admin/owner_details_screen.dart';
+import '../features/admin/support_inbox_screen.dart';
 import '../models/bus_model.dart';
 import '../models/booking_request_model.dart';
 import '../models/user_model.dart';
@@ -23,6 +24,7 @@ import '../features/customer/payment_screen.dart';
 import '../features/customer/trip_details_screen.dart';
 import '../features/payment/payment_details_screen.dart';
 import '../features/owner/owner_dashboard_screen.dart';
+import '../features/owner/payout_information_screen.dart';
 import '../features/owner/owner_message_screen.dart';
 import '../features/owner/add_bus_screen.dart';
 import '../features/owner/request_details_screen.dart';
@@ -33,6 +35,7 @@ import '../features/profile/edit_profile_screen.dart';
 import '../features/profile/help_support_screen.dart';
 import '../features/profile/legal_document_screen.dart';
 import '../features/profile/settings_screen.dart';
+import '../features/profile/support_conversation_screen.dart';
 import '../features/splash/splash_screen.dart';
 import '../providers/auth_provider.dart' as busgo_auth;
 import '../repositories/booking_request_repository.dart';
@@ -356,6 +359,10 @@ GoRouter createAppRouter(busgo_auth.AuthProvider authProvider) {
         builder: (context, state) => const OwnerDashboardScreen(),
       ),
       GoRoute(
+        path: '/owner/payout-information',
+        builder: (context, state) => const OwnerPayoutInformationScreen(),
+      ),
+      GoRoute(
         path: '/owner/add-bus',
         builder: (context, state) => const AddBusScreen(),
       ),
@@ -406,6 +413,10 @@ GoRouter createAppRouter(busgo_auth.AuthProvider authProvider) {
         builder: (context, state) => const AdminDashboardScreen(),
       ),
       GoRoute(
+        path: '/admin/support',
+        builder: (context, state) => const AdminSupportInboxScreen(),
+      ),
+      GoRoute(
         path: '/admin/booking-details',
         builder: (context, state) {
           final request = state.extra;
@@ -440,6 +451,12 @@ GoRouter createAppRouter(busgo_auth.AuthProvider authProvider) {
       GoRoute(
         path: '/help',
         builder: (context, state) => const HelpSupportScreen(),
+      ),
+      GoRoute(
+        path: '/support/:conversationId',
+        builder: (context, state) => SupportConversationScreen(
+          conversationId: state.pathParameters['conversationId']!,
+        ),
       ),
       GoRoute(
         path: '/legal/terms',

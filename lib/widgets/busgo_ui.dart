@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../app/theme.dart';
 import '../core/constants/app_roles.dart';
 import '../core/layout/responsive.dart';
-import '../app/theme.dart';
+import '../core/utils/profile_image_storage.dart';
 
 class BusGoBrandMark extends StatelessWidget {
   const BusGoBrandMark({super.key, this.compact = false, this.light = false});
@@ -111,16 +112,24 @@ class BusGoAuthShell extends StatelessWidget {
                             26,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.95),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.96),
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant
+                                  .withValues(alpha: 0.8),
                             ),
-                            boxShadow: const [
+                            boxShadow: [
                               BoxShadow(
-                                color: Color(0x55061B2D),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.shadow.withValues(alpha: 0.35),
                                 blurRadius: 30,
-                                offset: Offset(0, 18),
+                                offset: const Offset(0, 18),
                               ),
                             ],
                           ),
@@ -134,7 +143,9 @@ class BusGoAuthShell extends StatelessWidget {
                                     onPressed: () =>
                                         Navigator.of(context).maybePop(),
                                     icon: const Icon(Icons.arrow_back_rounded),
-                                    color: const Color(0xFF0B2944),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                 ),
                               child,
@@ -155,7 +166,7 @@ class BusGoAuthShell extends StatelessWidget {
 
   Widget _buildLegacyShell(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F8FA),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -223,17 +234,19 @@ class BusGoSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: padding ?? const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE5EAF2)),
-        boxShadow: const [
+        border: Border.all(color: colorScheme.outlineVariant),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0A0B1F3A),
+            color: colorScheme.shadow.withValues(alpha: 0.18),
             blurRadius: 24,
-            offset: Offset(0, 10),
+            offset: const Offset(0, 10),
           ),
         ],
       ),
@@ -328,16 +341,18 @@ class BusGoIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return IconButton(
       tooltip: tooltip,
       onPressed: onPressed,
       style: filled
           ? IconButton.styleFrom(
-              backgroundColor: Colors.white.withValues(alpha: 0.14),
-              foregroundColor: Colors.white,
+              backgroundColor: colorScheme.surfaceContainerHighest,
+              foregroundColor: colorScheme.onSurface,
             )
           : null,
-      icon: Icon(icon),
+      icon: Icon(icon, color: filled ? colorScheme.onSurface : null),
     );
   }
 }
@@ -630,7 +645,9 @@ class BusGoStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = _palette(tone);
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = _palette(tone, isDark, colorScheme);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
@@ -658,21 +675,31 @@ class BusGoStatusChip extends StatelessWidget {
     );
   }
 
-  (Color, Color) _palette(BusGoStatusTone value) => switch (value) {
+  (Color, Color) _palette(
+    BusGoStatusTone value,
+    bool isDark,
+    ColorScheme colorScheme,
+  ) => switch (value) {
     BusGoStatusTone.positive => (
-      const Color(0xFFE5F7EE),
-      const Color(0xFF087443),
+      isDark ? const Color(0xFF123528) : const Color(0xFFE5F7EE),
+      isDark ? const Color(0xFFE6FFF0) : const Color(0xFF087443),
     ),
     BusGoStatusTone.warning => (
-      const Color(0xFFFFF2D9),
-      const Color(0xFF9A5B00),
+      isDark ? const Color(0xFF3A2E14) : const Color(0xFFFFF2D9),
+      isDark ? const Color(0xFFFFD88A) : const Color(0xFF9A5B00),
     ),
     BusGoStatusTone.negative => (
-      const Color(0xFFFFE8E8),
-      const Color(0xFFB42318),
+      isDark ? const Color(0xFF3B1F23) : const Color(0xFFFFE8E8),
+      isDark ? const Color(0xFFFFB4B4) : const Color(0xFFB42318),
     ),
-    BusGoStatusTone.info => (const Color(0xFFE7F0FF), BusGoTokens.blue),
-    BusGoStatusTone.neutral => (const Color(0xFFEEF2F7), BusGoTokens.muted),
+    BusGoStatusTone.info => (
+      isDark ? const Color(0xFF112B4A) : const Color(0xFFE7F0FF),
+      isDark ? Colors.white : BusGoTokens.blue,
+    ),
+    BusGoStatusTone.neutral => (
+      isDark ? colorScheme.surfaceContainerHighest : const Color(0xFFEEF2F7),
+      isDark ? colorScheme.onSurface : BusGoTokens.muted,
+    ),
   };
 }
 
@@ -811,8 +838,8 @@ class _TimelineStep extends StatelessWidget {
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: isDone || isCurrent
-                      ? BusGoTokens.navy
-                      : BusGoTokens.muted,
+                      ? Theme.of(context).colorScheme.onSurface
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -835,9 +862,10 @@ class BusGoBusImage extends StatelessWidget {
   final double height;
   final double borderRadius;
 
+  bool get _hasValidImageUrl => isValidRemoteImageUrl(imageUrl);
+
   @override
   Widget build(BuildContext context) {
-    final hasImage = (imageUrl ?? '').trim().isNotEmpty;
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: Container(
@@ -850,7 +878,7 @@ class BusGoBusImage extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: hasImage
+        child: _hasValidImageUrl
             ? Image.network(
                 imageUrl!,
                 fit: BoxFit.cover,
@@ -858,9 +886,23 @@ class BusGoBusImage extends StatelessWidget {
                 cacheHeight: (height * 3).round(),
                 errorBuilder: (context, error, stackTrace) =>
                     _fallback(context),
-                loadingBuilder: (context, child, progress) => progress == null
-                    ? child
-                    : _fallback(context, showProgress: true),
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: const Color(0xFFFFB547),
+                        strokeWidth: 2,
+                        value: progress.expectedTotalBytes == null
+                            ? null
+                            : progress.cumulativeBytesLoaded /
+                                  progress.expectedTotalBytes!,
+                      ),
+                    ),
+                  );
+                },
               )
             : _fallback(context),
       ),
@@ -912,9 +954,10 @@ class BusGoProfileAvatar extends StatelessWidget {
   final VoidCallback? onTap;
   final String? tooltip;
 
+  bool get _hasValidImageUrl => isValidRemoteImageUrl(imageUrl);
+
   @override
   Widget build(BuildContext context) {
-    final hasImage = (imageUrl ?? '').trim().isNotEmpty;
     final avatar = Container(
       width: size,
       height: size,
@@ -927,7 +970,7 @@ class BusGoProfileAvatar extends StatelessWidget {
         ),
       ),
       clipBehavior: Clip.antiAlias,
-      child: hasImage
+      child: _hasValidImageUrl
           ? Image.network(
               imageUrl!,
               fit: BoxFit.cover,
@@ -1004,6 +1047,7 @@ class BusGoRoleSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final roles = [
       AppUserRole.customer,
       AppUserRole.owner,
@@ -1013,10 +1057,10 @@ class BusGoRoleSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select account type',
           style: TextStyle(
-            color: Color(0xFF0B2944),
+            color: colorScheme.onSurface,
             fontSize: 13,
             fontWeight: FontWeight.w800,
           ),
@@ -1050,7 +1094,7 @@ class BusGoRoleSelector extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   field.errorText!,
-                  style: TextStyle(color: Colors.red.shade700, fontSize: 12),
+                  style: TextStyle(color: colorScheme.error, fontSize: 12),
                 ),
               ],
             ],
@@ -1074,7 +1118,8 @@ class _BusGoRoleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = const Color(0xFF087F83);
+    final colorScheme = Theme.of(context).colorScheme;
+    final accent = colorScheme.primary;
     final icon = switch (role) {
       AppUserRole.customer => Icons.person_outline_rounded,
       AppUserRole.owner => Icons.directions_bus_outlined,
@@ -1090,10 +1135,12 @@ class _BusGoRoleCard extends StatelessWidget {
           duration: const Duration(milliseconds: 160),
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           decoration: BoxDecoration(
-            color: selected ? const Color(0xFFE4F6F4) : Colors.white,
+            color: selected
+                ? colorScheme.primaryContainer
+                : colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
-              color: selected ? accent : const Color(0xFFDCE5EA),
+              color: selected ? accent : colorScheme.outlineVariant,
               width: selected ? 1.8 : 1,
             ),
           ),
@@ -1102,7 +1149,7 @@ class _BusGoRoleCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 21,
-                color: selected ? accent : const Color(0xFF0B2944),
+                color: selected ? accent : colorScheme.onSurface,
               ),
               const SizedBox(height: 5),
               Text(
@@ -1111,7 +1158,7 @@ class _BusGoRoleCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: selected ? accent : const Color(0xFF0B2944),
+                  color: selected ? accent : colorScheme.onSurface,
                   fontSize: 11,
                   fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                 ),

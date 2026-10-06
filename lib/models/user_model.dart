@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../core/constants/app_roles.dart';
+import '../core/utils/profile_image_storage.dart';
 
 class AppUser {
   final String uid;
@@ -47,8 +48,8 @@ class AppUser {
       phone: _stringValue(data['phone']),
       role: AppUserRoleExtension.fromFirestoreMap(data),
       approvalStatus: _stringValue(data['approvalStatus']),
-      profileImageUrl: _stringValue(
-        data['profileImageUrl'] ?? data['profileImage'],
+      profileImageUrl: sanitizeProfileImageUrl(
+        _stringValue(data['profileImageUrl'] ?? data['profileImage']),
       ),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),

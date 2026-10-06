@@ -86,37 +86,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     required IconData icon,
     Widget? suffix,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InputDecoration(
       hintText: hint,
       filled: true,
-      fillColor: const Color(0xFFF2F6F8),
+      fillColor: colorScheme.surfaceContainerHighest,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-      prefixIcon: Icon(icon, color: const Color(0xFF087F83)),
+      prefixIcon: Icon(icon, color: colorScheme.primary),
       suffixIcon: suffix,
       hintStyle: TextStyle(
-        color: const Color(0xFF64748B),
+        color: colorScheme.onSurfaceVariant,
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFDCE5EA)),
+        borderSide: BorderSide(color: colorScheme.outlineVariant),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFDCE5EA)),
+        borderSide: BorderSide(color: colorScheme.outlineVariant),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFF087F83), width: 1.2),
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.8)),
+        borderSide: BorderSide(color: colorScheme.error, width: 1.2),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.red.withValues(alpha: 0.8)),
+        borderSide: BorderSide(color: colorScheme.error, width: 1.2),
       ),
     );
   }
@@ -124,6 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return BusGoAuthShell(
       showBack: true,
@@ -135,10 +138,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             const BusGoBrandMark(),
             const SizedBox(height: 7),
-            const Text(
+            Text(
               'Travel Together, Go Further',
               style: TextStyle(
-                color: Color(0xFF087F83),
+                color: colorScheme.primary,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.3,
@@ -149,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'Create Account',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: const Color(0xFF0B2944),
+                color: colorScheme.onSurface,
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
               ),
@@ -159,7 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'Join BUSGO and start your journey.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: const Color(0xFF64748B),
+                color: colorScheme.onSurfaceVariant,
                 fontSize: 14,
                 letterSpacing: 0.1,
               ),
@@ -168,8 +171,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
-              style: const TextStyle(
-                color: Color(0xFF0B2944),
+              style: TextStyle(
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
               validator: (value) {
@@ -190,8 +193,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              style: const TextStyle(
-                color: Color(0xFF0B2944),
+              style: TextStyle(
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
               validator: (value) {
@@ -212,8 +215,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              style: const TextStyle(
-                color: Color(0xFF0B2944),
+              style: TextStyle(
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
               validator: (value) {
@@ -235,8 +238,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _passwordController,
               obscureText: _obscurePassword,
-              style: const TextStyle(
-                color: Color(0xFF0B2944),
+              style: TextStyle(
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
               validator: (value) {
@@ -258,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _obscurePassword
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: const Color(0xFF087F83),
+                    color: colorScheme.primary,
                   ),
                 ),
               ),
@@ -267,8 +270,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _confirmPasswordController,
               obscureText: _obscureConfirmPassword,
-              style: const TextStyle(
-                color: Color(0xFF0B2944),
+              style: TextStyle(
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w600,
               ),
               validator: (value) {
@@ -291,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _obscureConfirmPassword
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: const Color(0xFF087F83),
+                    color: colorScheme.primary,
                   ),
                 ),
               ),
@@ -301,27 +304,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
               data: Theme.of(context).copyWith(
                 inputDecorationTheme: InputDecorationTheme(
                   filled: true,
-                  fillColor: const Color(0xFFF2F6F8),
+                  fillColor: colorScheme.surfaceContainerHighest,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 12,
                   ),
                   hintStyle: TextStyle(
-                    color: const Color(0xFF64748B),
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: const Color(0xFFDCE5EA)),
+                    borderSide: BorderSide(color: colorScheme.outlineVariant),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: const Color(0xFFDCE5EA)),
+                    borderSide: BorderSide(color: colorScheme.outlineVariant),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF087F83),
+                    borderSide: BorderSide(
+                      color: colorScheme.primary,
                       width: 1.2,
                     ),
                   ),
@@ -339,8 +342,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: ElevatedButton(
                 onPressed: authProvider.isBusy ? null : _submit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF087F83),
-                  foregroundColor: Colors.white,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(28),
@@ -372,14 +375,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Text(
                   'Already have an account?',
                   style: TextStyle(
-                    color: const Color(0xFF64748B),
+                    color: colorScheme.onSurfaceVariant,
                     fontSize: 14,
                   ),
                 ),
                 TextButton(
                   onPressed: () => context.go('/login'),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF087F83),
+                    foregroundColor: colorScheme.primary,
                     padding: const EdgeInsets.symmetric(horizontal: 6),
                     minimumSize: Size.zero,
                   ),
@@ -394,11 +397,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             ),
             const SizedBox(height: 18),
-            const Text(
+            Text(
               'Travel Together\nMake Better Memories',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFF64748B),
+                color: colorScheme.onSurfaceVariant,
                 fontSize: 12,
                 height: 1.4,
                 fontWeight: FontWeight.w600,

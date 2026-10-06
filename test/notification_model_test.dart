@@ -25,6 +25,68 @@ void main() {
     expect(data['ownerName'], 'Kishore');
   });
 
+  test('customer message notifications retain customer details for admins', () {
+    final notification = NotificationModel(
+      id: 'customer-message-1',
+      recipientId: 'admin-1',
+      type: 'customer_message',
+      title: 'Message from customer',
+      message: 'Hi, I need help with my booking.',
+      relatedCustomerId: 'customer-9',
+      relatedCustomerName: 'Priya',
+      isRead: false,
+      createdAt: DateTime(2026, 9, 30),
+    );
+
+    final data = notification.toFirestore();
+
+    expect(data['recipientId'], 'admin-1');
+    expect(data['type'], 'customer_message');
+    expect(data['message'], 'Hi, I need help with my booking.');
+    expect(data['customerId'], 'customer-9');
+    expect(data['customerName'], 'Priya');
+  });
+
+  test('support notifications retain their conversation reference', () {
+    final notification = NotificationModel(
+      id: 'support-reply-1',
+      recipientId: 'customer-9',
+      type: 'support_reply',
+      title: 'BUSGO Admin replied to your message',
+      message: 'How can I help?',
+      conversationId: 'customer-9',
+      senderId: 'admin-1',
+      isRead: false,
+      createdAt: DateTime(2026, 10, 5),
+    );
+
+    expect(notification.toFirestore()['conversationId'], 'customer-9');
+  });
+
+  test(
+    'owner support notifications keep the authenticated sender identity in every supported field',
+    () {
+      final notification = NotificationModel(
+        id: 'owner-message-2',
+        recipientId: 'admin-1',
+        type: 'owner_message',
+        title: 'Message from bus owner',
+        message: 'Hi good',
+        senderId: 'owner-42',
+        relatedOwnerId: 'owner-42',
+        relatedOwnerName: 'Owner Test',
+        isRead: false,
+        createdAt: DateTime(2026, 9, 30),
+      );
+
+      final data = notification.toFirestore();
+
+      expect(data['senderId'], 'owner-42');
+      expect(data['ownerId'], 'owner-42');
+      expect(data['relatedOwnerId'], 'owner-42');
+    },
+  );
+
   test('bus deletion notification keeps structured historical identifiers', () {
     final deletedAt = DateTime(2026, 9, 29, 14, 30);
     final notification = NotificationModel(

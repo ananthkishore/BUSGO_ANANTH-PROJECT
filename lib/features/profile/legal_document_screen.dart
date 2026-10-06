@@ -15,7 +15,7 @@ class LegalSection {
   final String body;
 }
 
-class LegalDocumentScreen extends StatelessWidget {
+class LegalDocumentScreen extends StatefulWidget {
   const LegalDocumentScreen({
     super.key,
     required this.title,
@@ -28,18 +28,35 @@ class LegalDocumentScreen extends StatelessWidget {
   final bool about;
 
   @override
+  State<LegalDocumentScreen> createState() => _LegalDocumentScreenState();
+}
+
+class _LegalDocumentScreenState extends State<LegalDocumentScreen> {
+  late final Future<PackageInfo> _packageInfoFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _packageInfoFuture = PackageInfo.fromPlatform();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (about) return _aboutBusGo(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    if (widget.about) return _aboutBusGo(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: colorScheme.onSurface),
+        ),
         centerTitle: false,
         leading: IconButton(
           tooltip: 'Back',
           onPressed: () {
             debugPrint('[BUSGO BACK NAVIGATION]');
-            debugPrint('currentScreen: $title');
+            debugPrint('currentScreen: ${widget.title}');
             debugPrint('previousScreen: legal documents');
             debugPrint('navigationType: ${context.canPop() ? 'pop' : 'no-op'}');
             debugPrint('canPop: ${context.canPop()}');
@@ -48,7 +65,7 @@ class LegalDocumentScreen extends StatelessWidget {
               context.pop();
             }
           },
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: Icon(Icons.arrow_back_rounded, color: colorScheme.onSurface),
         ),
       ),
       body: SafeArea(
@@ -57,21 +74,31 @@ class LegalDocumentScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: Theme.of(context).textTheme.headlineMedium),
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
               const SizedBox(height: 8),
               const SizedBox(height: 18),
-              for (final section in sections) ...[
+              for (final section in widget.sections) ...[
                 const SizedBox(height: 8),
                 Text(
                   section.heading,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: colorScheme.onSurface,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   section.body,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(height: 1.6),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    height: 1.6,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ],
@@ -86,10 +113,14 @@ class LegalDocumentScreen extends StatelessWidget {
     final roleLabel = user?.role.label ?? 'BUSGO';
     final name = user?.name.trim() ?? '';
     final initials = name.isNotEmpty ? name[0].toUpperCase() : 'B';
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About BUSGO'),
+        title: Text(
+          'About BUSGO',
+          style: TextStyle(color: colorScheme.onSurface),
+        ),
         centerTitle: false,
         leading: IconButton(
           tooltip: 'Back',
@@ -104,7 +135,7 @@ class LegalDocumentScreen extends StatelessWidget {
               context.pop();
             }
           },
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: Icon(Icons.arrow_back_rounded, color: colorScheme.onSurface),
         ),
       ),
       body: SafeArea(
@@ -120,11 +151,11 @@ class LegalDocumentScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         BusGoBrandMark(compact: true),
-                        SizedBox(height: 3),
+                        const SizedBox(height: 3),
                         Text(
                           roleLabel,
-                          style: const TextStyle(
-                            color: BusGoTokens.blue,
+                          style: TextStyle(
+                            color: colorScheme.primary,
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                           ),
@@ -143,16 +174,16 @@ class LegalDocumentScreen extends StatelessWidget {
               Text(
                 'About BUSGO',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 5),
               Text(
                 'App information and details',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 16),
               BusGoSurface(
@@ -164,7 +195,7 @@ class LegalDocumentScreen extends StatelessWidget {
                     Text(
                       'Bus Management Platform',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -172,7 +203,9 @@ class LegalDocumentScreen extends StatelessWidget {
                     Text(
                       'Connecting customers, bus owners and administrators',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -230,7 +263,7 @@ class LegalDocumentScreen extends StatelessWidget {
   }
 
   Widget _aboutInformation(BuildContext context) => FutureBuilder<PackageInfo>(
-    future: PackageInfo.fromPlatform(),
+    future: _packageInfoFuture,
     builder: (context, snapshot) {
       if (snapshot.connectionState != ConnectionState.done) {
         return const BusGoSurface(
@@ -283,7 +316,7 @@ class LegalDocumentScreen extends StatelessWidget {
           child: Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -324,7 +357,7 @@ class LegalDocumentScreen extends StatelessWidget {
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
           ),
         ),

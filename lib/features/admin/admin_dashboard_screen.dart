@@ -318,9 +318,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Notifications', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: BusGoTokens.navy, fontWeight: FontWeight.w900)),
+                        Text('Notifications', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w900)),
                         const SizedBox(height: 5),
-                        Text('Stay updated with all important activities', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted)),
+                        Text('Stay updated with all important activities', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                       ],
                     ),
                   ),
@@ -379,6 +379,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           _notificationFilterChip('all', 'All (${notifications.length})'),
           _notificationFilterChip('unread', 'Unread ($unread)'),
           _notificationFilterChip('system', 'System (${counts['system'] ?? 0})'),
+          _notificationFilterChip('support', 'Support (${counts['support'] ?? 0})'),
           _notificationFilterChip('booking', 'Bookings (${counts['booking'] ?? 0})'),
           _notificationFilterChip('owner', 'Owners (${counts['owner'] ?? 0})'),
           _notificationFilterChip('bus', 'Buses (${counts['bus'] ?? 0})'),
@@ -403,6 +404,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   String _notificationCategory(NotificationModel notification) {
     final type = notification.type.toLowerCase();
+    if (type == 'owner_message' ||
+        type == 'customer_message' ||
+        type == 'support_reply') {
+      return 'support';
+    }
     if (type.contains('owner')) return 'owner';
     if (type.contains('bus')) return 'bus';
     if (type.contains('booking') || type.contains('request')) return 'booking';
@@ -484,16 +490,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           orElse: () => null,
         );
     final now = DateTime.now();
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 12, 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(26),
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFEAF7FF), Color(0xFFF8FBFF)],
+          colors: isDark
+              ? [colorScheme.surfaceContainer, colorScheme.surfaceContainerHigh]
+              : const [Color(0xFFEAF7FF), Color(0xFFF8FBFF)],
         ),
-        border: Border.all(color: const Color(0xFFDDEBF7)),
+        border: Border.all(color: BusGoTokens.teal),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -505,7 +515,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 Text(
                   'Good morning, $name',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -513,7 +523,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 Text(
                   "Let's keep BUSGO running smoothly\nand make travel better for everyone.",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.muted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.35,
                   ),
                 ),
@@ -529,7 +539,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Text(
                       '${_adminWeekday(now.weekday)}, ${now.day} ${_adminMonth(now.month)} ${now.year}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -621,7 +631,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -629,7 +639,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -649,7 +659,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -742,7 +752,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -840,7 +850,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -849,9 +859,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 subtitle,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -861,9 +871,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         const SizedBox(width: 5),
         Text(
           time,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const Icon(Icons.chevron_right_rounded, color: BusGoTokens.blue),
       ],
@@ -941,15 +951,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Text(
                       "Today's Bookings",
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
                     Text(
                       '$todayCount today',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -957,7 +967,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               Text(
                 '$todayCount',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -1001,7 +1011,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             _adminShortDay(today.weekday, 5 - index),
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
-                                  color: BusGoTokens.muted,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                                   fontSize: 10,
                                 ),
                           ),
@@ -1107,7 +1119,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           tooltip: 'Notifications',
           icon: const Icon(Icons.notifications_none_rounded),
           style: IconButton.styleFrom(
-            backgroundColor: const Color(0xFFE8F7F7),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             foregroundColor: BusGoTokens.blue,
           ),
         ),
@@ -1203,7 +1215,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         'Customer Requests',
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
-                              color: BusGoTokens.navy,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -1211,7 +1223,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Text(
                         'View and manage customer support requests',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -1347,15 +1359,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   Text(
                     '$count',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
                     label,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -1379,26 +1391,31 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       request.status == BookingRequestStatus.adminRejected ||
       request.status == BookingRequestStatus.cancelled;
 
-  Widget _requestFilterChip(String value, String label) => Padding(
-    padding: const EdgeInsets.only(right: 8),
-    child: ChoiceChip(
-      label: Text(label),
-      selected: _requestFilter == value,
-      onSelected: (_) => setState(() => _requestFilter = value),
-      labelStyle: TextStyle(
-        color: _requestFilter == value ? Colors.white : BusGoTokens.navy,
-        fontWeight: FontWeight.w700,
+  Widget _requestFilterChip(String value, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: _requestFilter == value,
+        onSelected: (_) => setState(() => _requestFilter = value),
+        labelStyle: TextStyle(
+          color: _requestFilter == value
+              ? colorScheme.onPrimary
+              : colorScheme.onSurface,
+          fontWeight: FontWeight.w700,
+        ),
+        selectedColor: colorScheme.primary,
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        side: BorderSide(
+          color: _requestFilter == value
+              ? colorScheme.primary
+              : colorScheme.outlineVariant,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       ),
-      selectedColor: BusGoTokens.blue,
-      backgroundColor: Colors.white,
-      side: BorderSide(
-        color: _requestFilter == value
-            ? BusGoTokens.blue
-            : const Color(0xFFDCE6F0),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
-    ),
-  );
+    );
+  }
 
   Widget _buses() => CustomScrollView(
     slivers: [
@@ -1489,7 +1506,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         'All Buses',
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
-                              color: BusGoTokens.navy,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -1497,7 +1514,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Text(
                         'Manage and monitor all registered buses',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -1602,7 +1619,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               tooltip: 'Back to all buses',
               onPressed: () => setState(() => _selectedBusId = null),
               icon: const Icon(Icons.arrow_back_rounded),
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             Expanded(
               child: Column(
@@ -1644,16 +1661,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         Text(
           'Verify Bus Details',
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w900,
           ),
         ),
         const SizedBox(height: 5),
         Text(
           'Review the information provided by the owner',
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         const SizedBox(height: 18),
         BusGoBusImage(imageUrl: bus.imageUrl, height: 190, borderRadius: 20),
@@ -1671,7 +1688,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           ? 'Registration not provided'
                           : bus.registrationNumber,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -1783,14 +1800,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               Text(
                 'Documents',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               const SizedBox(height: 10),
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.description_outlined, color: BusGoTokens.muted),
+                  Icon(
+                    Icons.description_outlined,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -1849,7 +1869,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               child: Text(
                 title,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -1980,15 +2000,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               Text(
                 '$count',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
                 label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -2004,13 +2024,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       selected: _busFilter == value,
       onSelected: (_) => setState(() => _busFilter = value),
       labelStyle: TextStyle(
-        color: _busFilter == value ? Colors.white : BusGoTokens.navy,
+        color: _busFilter == value
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
       selectedColor: BusGoTokens.blue,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       side: BorderSide(
-        color: _busFilter == value ? BusGoTokens.blue : const Color(0xFFDCE6F0),
+        color: _busFilter == value ? BusGoTokens.blue : BusGoTokens.teal,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
     ),
@@ -2091,7 +2113,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         'Bus Owners',
                         style: Theme.of(context).textTheme.headlineMedium
                             ?.copyWith(
-                              color: BusGoTokens.navy,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -2099,7 +2121,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       Text(
                         'Manage and monitor all bus owners on the platform',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 18),
@@ -2165,14 +2187,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       onSelected: (_) => setState(() => _ownerFilter = value),
       selectedColor: BusGoTokens.blue,
       labelStyle: TextStyle(
-        color: _ownerFilter == value ? Colors.white : BusGoTokens.navy,
+        color: _ownerFilter == value
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       side: BorderSide(
         color: _ownerFilter == value
             ? BusGoTokens.blue
-            : const Color(0xFFDCE6F0),
+            : BusGoTokens.teal,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
     ),
@@ -2220,7 +2244,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   Text(
                     '$count',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -2228,9 +2252,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -2351,7 +2375,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             'Trips Management',
                             style: Theme.of(context).textTheme.headlineMedium
                                 ?.copyWith(
-                                  color: BusGoTokens.navy,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontWeight: FontWeight.w900,
                                 ),
                           ),
@@ -2359,7 +2385,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           Text(
                             'Monitor and manage all scheduled trips',
                             style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: BusGoTokens.muted),
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                           const SizedBox(height: 18),
                           TextField(
@@ -2521,15 +2551,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               Text(
                 '$count',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
               Text(
                 label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -2545,15 +2575,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       selected: _tripFilter == value,
       onSelected: (_) => setState(() => _tripFilter = value),
       labelStyle: TextStyle(
-        color: _tripFilter == value ? Colors.white : BusGoTokens.navy,
+        color: _tripFilter == value
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
       selectedColor: BusGoTokens.blue,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       side: BorderSide(
         color: _tripFilter == value
             ? BusGoTokens.blue
-            : const Color(0xFFDCE6F0),
+            : BusGoTokens.teal,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
     ),
@@ -2580,6 +2612,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     title: 'Admin tools',
     child: Column(
       children: [
+        _toolTile(
+          title: 'Messages / Support Inbox',
+          subtitle: 'Read and reply to customer and bus owner messages',
+          icon: Icons.forum_outlined,
+          section: 'support',
+          onTap: () => context.push('/admin/support'),
+        ),
         _toolTile(
           title: 'Notifications',
           subtitle: 'All system updates and activities',
@@ -2627,7 +2666,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       padding: EdgeInsets.zero,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: const Color(0xFFE8F7F7),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           foregroundColor: BusGoTokens.blue,
           child: Icon(icon),
         ),
@@ -2784,6 +2823,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     debugPrint('reviewId: null');
     debugPrint('destination: ${destination ?? 'fallback'}');
     debugPrint('[/BUSGO NOTIFICATION TAP]');
+    final conversationId = notification.conversationId?.trim();
+    if (conversationId != null &&
+        conversationId.isNotEmpty &&
+        (notification.type == 'owner_message' ||
+            notification.type == 'customer_message' ||
+            notification.type == 'support_reply')) {
+      context.push('/support/$conversationId');
+      return;
+    }
     if (notification.type == 'owner_message') {
       if (!mounted) return;
       await showDialog<void>(
@@ -2991,16 +3039,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Text(
             'Help & Support',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             'Get help, support and find answers',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 16),
           TextField(
@@ -3040,7 +3088,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Text(
             'Popular Topics',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -3068,7 +3116,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   'BUSGO help topics',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -3092,7 +3140,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 Text(
                   'Still need help?',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -3162,7 +3210,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -3189,16 +3237,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 Text(
                   'Notifications',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   'Stay updated with all important activities',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
@@ -3239,15 +3287,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       selected: _notificationFilter == value,
       onSelected: (_) => setState(() => _notificationFilter = value),
       labelStyle: TextStyle(
-        color: _notificationFilter == value ? Colors.white : BusGoTokens.navy,
+        color: _notificationFilter == value
+            ? Colors.white
+            : Theme.of(context).colorScheme.onSurface,
         fontWeight: FontWeight.w700,
       ),
       selectedColor: BusGoTokens.blue,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       side: BorderSide(
         color: _notificationFilter == value
             ? BusGoTokens.blue
-            : const Color(0xFFDCE6F0),
+            : BusGoTokens.teal,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
     ),
@@ -3257,6 +3307,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     if (_notificationFilter == 'all') return true;
     if (_notificationFilter == 'unread') return !notification.isRead;
     final type = notification.type.toLowerCase();
+    if (_notificationFilter == 'support') {
+      return type == 'owner_message' ||
+          type == 'customer_message' ||
+          type == 'support_reply';
+    }
     if (_notificationFilter == 'owner') return type.contains('owner');
     if (_notificationFilter == 'bus') return type.contains('bus');
     if (_notificationFilter == 'booking') {
@@ -3286,6 +3341,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   bool _matchesNotificationFilterForKnownType(String type) =>
+      type == 'owner_message' ||
+      type == 'customer_message' ||
+      type == 'support_reply' ||
       type.contains('owner') ||
       type.contains('bus') ||
       type.contains('booking') ||
@@ -3306,16 +3364,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Text(
             'Settings',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             'Manage system settings and preferences',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 16),
           _settingsRow(
@@ -3391,7 +3449,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -3471,7 +3529,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       'Reports & Analytics',
                       style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
-                            color: BusGoTokens.navy,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w900,
                           ),
                     ),
@@ -3479,7 +3537,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     Text(
                       'Insights and statistics about your bus platform',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: BusGoTokens.muted,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -3510,8 +3568,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                             size: 17,
                           ),
                           label: Text(_reportPeriodLabel()),
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Color(0xFFDCE6F0)),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                          side: const BorderSide(color: BusGoTokens.teal),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(999),
                           ),
@@ -3628,9 +3688,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             alignment: Alignment.centerRight,
             child: Text(
               _reportPeriodLabel(),
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -3758,36 +3818,48 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return _reportSection(
       'Bus Utilization',
       Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 92,
-            height: 92,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircularProgressIndicator(
-                  value: utilization / 100,
-                  strokeWidth: 9,
-                  color: BusGoTokens.blue,
-                  backgroundColor: const Color(0xFFE5EEF8),
+            width: 96,
+            height: 96,
+            child: Center(
+              child: SizedBox.square(
+                dimension: 82,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: utilization / 100,
+                      strokeWidth: 9,
+                      color: BusGoTokens.blue,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                    ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '$utilization%',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  '$utilization%',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: BusGoTokens.navy,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Text(
               '${usedBusIds.length} of $approvedBuses approved buses have booking activity in this period.',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],
@@ -3821,7 +3893,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Text(
             '${users.length} total users',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -3871,7 +3943,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -3906,8 +3978,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         ),
         Text(
           value,
-          style: const TextStyle(
-            color: BusGoTokens.muted,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -4259,8 +4331,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: BusGoTokens.muted,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
@@ -4274,7 +4346,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: valueColor ?? BusGoTokens.navy,
+            color: valueColor ?? Theme.of(context).colorScheme.onSurface,
             fontSize: 13,
             fontWeight: FontWeight.w800,
           ),
@@ -4286,7 +4358,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   Widget _profileSectionTitle(String title) => Text(
     title,
     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-      color: BusGoTokens.navy,
+      color: Theme.of(context).colorScheme.onSurface,
       fontWeight: FontWeight.w900,
     ),
   );
@@ -4315,7 +4387,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -4405,7 +4477,7 @@ class _AdminNotificationCard extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: notification.isRead
-                  ? const Color(0xFFE8F7F7)
+                  ? Theme.of(context).colorScheme.primaryContainer
                   : const Color(0xFFE8F0FF),
               foregroundColor: notification.isRead
                   ? BusGoTokens.blue
@@ -4521,7 +4593,7 @@ class _AdminTripCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: BusGoTokens.navy,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
@@ -4638,7 +4710,7 @@ class _AdminCustomerRequestCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
-                              color: BusGoTokens.navy,
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontWeight: FontWeight.w900,
                             ),
                       ),
@@ -4671,9 +4743,9 @@ class _AdminCustomerRequestCard extends StatelessWidget {
               message,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 8),
             Text('Customer ID: ${request.customerId}'),
@@ -4858,7 +4930,7 @@ class _AdminRequestCardState extends State<_AdminRequestCard> {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: const Color(0xFFE8F7F7),
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                 foregroundColor: BusGoTokens.blue,
                 child: const Icon(Icons.route_rounded),
               ),
@@ -5341,7 +5413,7 @@ class _OwnerApprovalCardState extends State<_OwnerApprovalCard> {
             Text(
               '${widget.busCount} ${widget.busCount == 1 ? 'bus' : 'buses'}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: BusGoTokens.navy,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w700,
               ),
             ),

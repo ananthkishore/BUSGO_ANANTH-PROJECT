@@ -7,12 +7,16 @@ class NotificationModel {
     required this.type,
     required this.title,
     required this.message,
+    this.conversationId,
+    this.senderId,
     this.relatedBookingId,
     this.relatedBusId,
     this.relatedOwnerId,
+    this.relatedCustomerId,
     this.relatedBusName,
     this.relatedRegistrationNumber,
     this.relatedOwnerName,
+    this.relatedCustomerName,
     this.deletedAt,
     required this.isRead,
     required this.createdAt,
@@ -23,12 +27,16 @@ class NotificationModel {
   final String type;
   final String title;
   final String message;
+  final String? conversationId;
+  final String? senderId;
   final String? relatedBookingId;
   final String? relatedBusId;
   final String? relatedOwnerId;
+  final String? relatedCustomerId;
   final String? relatedBusName;
   final String? relatedRegistrationNumber;
   final String? relatedOwnerName;
+  final String? relatedCustomerName;
   final DateTime? deletedAt;
   final bool isRead;
   final DateTime createdAt;
@@ -94,40 +102,60 @@ class NotificationModel {
       'busId',
       'bus_id',
     ]);
+    final explicitSenderId = resolveRelatedId(data, const ['senderId']);
+    final ownerId = resolveRelatedId(data, const ['ownerId', 'relatedOwnerId']);
+    final customerId = resolveRelatedId(data, const [
+      'customerId',
+      'relatedCustomerId',
+    ]);
+
     return NotificationModel(
       id: snapshot.id,
       recipientId: data['recipientId'] as String? ?? '',
       type: data['type'] as String? ?? 'general',
       title: data['title'] as String? ?? 'BUSGO update',
       message: data['message'] as String? ?? '',
+      conversationId: resolveRelatedId(data, const ['conversationId']),
+      senderId: explicitSenderId ?? ownerId ?? customerId,
       relatedBookingId: relatedBookingId,
       relatedBusId: relatedBusId,
-      relatedOwnerId: resolveRelatedId(data, const [
-        'ownerId',
-        'relatedOwnerId',
-      ]),
+      relatedOwnerId: ownerId,
+      relatedCustomerId: customerId,
       relatedBusName: data['busName'] as String?,
       relatedRegistrationNumber: data['registrationNumber'] as String?,
       relatedOwnerName: data['ownerName'] as String?,
+      relatedCustomerName: data['customerName'] as String?,
       deletedAt: (data['deletedAt'] as Timestamp?)?.toDate(),
       isRead: data['isRead'] as bool? ?? false,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
-  Map<String, dynamic> toFirestore() => {
-    'recipientId': recipientId,
-    'type': type,
-    'title': title,
-    'message': message,
-    'relatedBookingId': relatedBookingId,
-    'relatedBusId': relatedBusId,
-    'ownerId': relatedOwnerId,
-    'busName': relatedBusName,
-    'registrationNumber': relatedRegistrationNumber,
-    'ownerName': relatedOwnerName,
-    'deletedAt': deletedAt == null ? null : Timestamp.fromDate(deletedAt!),
-    'isRead': isRead,
-    'createdAt': FieldValue.serverTimestamp(),
-  };
+  Map<String, dynamic> toFirestore() {
+    final resolvedSenderId = senderId ?? relatedOwnerId ?? relatedCustomerId;
+    final resolvedOwnerId = relatedOwnerId ?? senderId;
+    final resolvedCustomerId = relatedCustomerId ?? senderId;
+
+    return {
+      'recipientId': recipientId,
+      'type': type,
+      'title': title,
+      'message': message,
+      if (conversationId != null) 'conversationId': conversationId,
+      'senderId': resolvedSenderId,
+      'relatedBookingId': relatedBookingId,
+      'relatedBusId': relatedBusId,
+      'ownerId': resolvedOwnerId,
+      'relatedOwnerId': resolvedOwnerId,
+      'customerId': resolvedCustomerId,
+      'relatedCustomerId': resolvedCustomerId,
+      'busName': relatedBusName,
+      'registrationNumber': relatedRegistrationNumber,
+      'ownerName': relatedOwnerName,
+      'customerName': relatedCustomerName,
+      'deletedAt': deletedAt == null ? null : Timestamp.fromDate(deletedAt!),
+      'isRead': isRead,
+      'createdAt': FieldValue.serverTimestamp(),
+    };
+  }
 }

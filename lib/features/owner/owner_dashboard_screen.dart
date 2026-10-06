@@ -440,7 +440,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         Text(
           'Quick Actions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: BusGoTokens.navy,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w900,
           ),
         ),
@@ -648,7 +648,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           children: [
             Icon(
               icon,
-              color: onTap == null ? BusGoTokens.muted : BusGoTokens.blue,
+              color: onTap == null
+                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                  : BusGoTokens.blue,
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -657,7 +659,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -683,7 +685,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               Text(
                 'Travel Together, Go Further',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: BusGoTokens.muted,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -695,7 +697,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           icon: const Icon(Icons.notifications_none_rounded),
           tooltip: 'Notifications',
           style: IconButton.styleFrom(
-            backgroundColor: const Color(0xFFEAF8F8),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             foregroundColor: BusGoTokens.blue,
           ),
         ),
@@ -723,7 +725,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         child: Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: const Color(0xFF102A43),
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -762,7 +764,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: BusGoTokens.muted,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w700,
             fontSize: compact ? 10 : null,
           ),
@@ -775,7 +777,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                       ? Theme.of(context).textTheme.titleMedium
                       : Theme.of(context).textTheme.titleLarge)
                   ?.copyWith(
-                    color: const Color(0xFF102A43),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
         ),
@@ -819,16 +821,16 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 Text(
                   'Booking Requests',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Review and manage customer booking requests',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 child,
@@ -891,19 +893,27 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         TextField(
           controller: _requestSearchController,
           onChanged: (_) => setState(() {}),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: 'Search by route, date or customer name...',
-            prefixIcon: const Icon(Icons.search_rounded),
+            prefixIcon: Icon(
+              Icons.search_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             isDense: true,
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: BusGoTokens.border),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: BusGoTokens.border),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
           ),
         ),
@@ -947,17 +957,20 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               .where((request) => filter.matches(request.status))
               .length;
           final selected = filter == _requestFilter;
+          final colorScheme = Theme.of(context).colorScheme;
           return ChoiceChip(
             label: Text('${filter.label} ($count)'),
             selected: selected,
             onSelected: (_) => setState(() => _requestFilter = filter),
-            selectedColor: BusGoTokens.blue,
+            selectedColor: colorScheme.primary,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : BusGoTokens.navy,
+              color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
             side: BorderSide(
-              color: selected ? BusGoTokens.blue : BusGoTokens.border,
+              color: selected
+                  ? colorScheme.primary
+                  : colorScheme.outlineVariant,
             ),
           );
         },
@@ -969,7 +982,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EFF7),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
       ),
     );
@@ -1032,7 +1045,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                                       .textTheme
                                       .headlineSmall
                                       ?.copyWith(
-                                        color: BusGoTokens.navy,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
                                         fontWeight: FontWeight.w900,
                                       ),
                                 ),
@@ -1042,7 +1057,11 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(color: BusGoTokens.muted),
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
+                                      ),
                                 ),
                               ],
                             ),
@@ -1111,14 +1130,20 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   prefixIcon: const Icon(Icons.search_rounded),
                   isDense: true,
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: BusGoTokens.border),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(color: BusGoTokens.border),
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
                   ),
                 ),
               ),
@@ -1150,8 +1175,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: BusGoTokens.border),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(Icons.sort_rounded),
@@ -1225,17 +1252,20 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 ),
               )
               .length;
+          final colorScheme = Theme.of(context).colorScheme;
           return ChoiceChip(
             label: Text('${filter.label} ($count)'),
             selected: selected,
             onSelected: (_) => setState(() => _busFilter = filter),
-            selectedColor: BusGoTokens.blue,
+            selectedColor: colorScheme.primary,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : BusGoTokens.navy,
+              color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
             side: BorderSide(
-              color: selected ? BusGoTokens.blue : BusGoTokens.border,
+              color: selected
+                  ? colorScheme.primary
+                  : colorScheme.outlineVariant,
             ),
           );
         },
@@ -1256,7 +1286,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         (_) => Container(
           height: 66,
           decoration: BoxDecoration(
-            color: const Color(0xFFE8EFF7),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(20),
           ),
         ),
@@ -1317,7 +1347,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                       ? 'My Trips'
                       : 'Earnings History',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -1326,9 +1356,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   _ownerTripsSection == 'trips'
                       ? 'View your confirmed and scheduled trips'
                       : 'Track all your earnings from completed trips',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 SegmentedButton<String>(
@@ -1434,17 +1464,18 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           final filter = _TripFilter.values[index];
           final selected = filter == _tripFilter;
           final count = trips.where(filter.matches).length;
+          final colorScheme = Theme.of(context).colorScheme;
           return ChoiceChip(
             label: Text('${filter.label} ($count)'),
             selected: selected,
             onSelected: (_) => setState(() => _tripFilter = filter),
-            selectedColor: BusGoTokens.blue,
+            selectedColor: colorScheme.primary,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : BusGoTokens.navy,
+              color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
             side: BorderSide(
-              color: selected ? BusGoTokens.blue : BusGoTokens.border,
+              color: selected ? colorScheme.primary : colorScheme.outline,
             ),
           );
         },
@@ -1551,7 +1582,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               child: Text(
                 'Earnings History',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -1595,6 +1626,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         itemBuilder: (context, index) {
           final filter = _EarningsFilter.values[index];
           final selected = filter == _earningsFilter;
+          final colorScheme = Theme.of(context).colorScheme;
           return ChoiceChip(
             label: Text(filter.label),
             selected: selected,
@@ -1608,13 +1640,13 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 });
               }
             },
-            selectedColor: BusGoTokens.blue,
+            selectedColor: colorScheme.primary,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : BusGoTokens.navy,
+              color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
             side: BorderSide(
-              color: selected ? BusGoTokens.blue : BusGoTokens.border,
+              color: selected ? colorScheme.primary : colorScheme.outline,
             ),
           );
         },
@@ -1633,14 +1665,18 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             prefixIcon: const Icon(Icons.search_rounded),
             isDense: true,
             filled: true,
-            fillColor: Colors.white,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: BusGoTokens.border),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: BusGoTokens.border),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
             ),
           ),
         );
@@ -1693,7 +1729,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                       : Icons.radio_button_off_rounded,
                   color: filter == _earningsHistoryStatus
                       ? BusGoTokens.blue
-                      : BusGoTokens.muted,
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 title: Text(filter.label),
                 onTap: () => Navigator.pop(context, filter),
@@ -1739,7 +1775,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Text(
             'Total Earnings',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -1747,7 +1783,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Text(
             '₹${total.toStringAsFixed(0)}',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -1755,7 +1791,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Text(
             _earningsFilter.label,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -1795,7 +1831,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: const Color(0xFFEAF2FF),
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: BusGoTokens.blue, size: 16),
@@ -1810,14 +1846,14 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: BusGoTokens.muted,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 10,
                   ),
                 ),
                 Text(
                   value,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -1938,7 +1974,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Text(
             'Monthly Earnings',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -1957,7 +1993,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               trailing: Text(
                 '₹${totals[period]!.toStringAsFixed(0)}',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: BusGoTokens.navy,
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.w900,
                 ),
               ),
@@ -2018,7 +2054,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Text(
             'Earnings Overview',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -2060,7 +2096,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                             monthLabels[months[index].month - 1],
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
-                                  color: BusGoTokens.muted,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                                   fontSize: 10,
                                 ),
                           ),
@@ -2080,7 +2118,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EFF7),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
       ),
     );
@@ -2090,52 +2128,56 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     return Container(
       height: 164,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EFF7),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(20),
       ),
     );
   }
 
   Widget _payoutInformation() {
-    return BusGoSurface(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFFEAF2FF),
-              borderRadius: BorderRadius.circular(13),
+    return InkWell(
+      onTap: () => context.push('/owner/payout-information'),
+      borderRadius: BorderRadius.circular(20),
+      child: BusGoSurface(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: const Icon(
+                Icons.account_balance_wallet_outlined,
+                color: BusGoTokens.blue,
+              ),
             ),
-            child: const Icon(
-              Icons.account_balance_wallet_outlined,
-              color: BusGoTokens.blue,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Payout Information',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: BusGoTokens.navy,
-                    fontWeight: FontWeight.w800,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Payout Information',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ),
-                Text(
-                  'Manage your payout method and bank details',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
-                ),
-              ],
+                  Text(
+                    'Manage your payout method and bank details',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.chevron_right_rounded, color: BusGoTokens.blue),
-        ],
+            const Icon(Icons.chevron_right_rounded, color: BusGoTokens.blue),
+          ],
+        ),
       ),
     );
   }
@@ -2181,16 +2223,16 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 Text(
                   'Alerts & Notifications',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Stay updated with your bookings, trips and important information',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 18),
                 child,
@@ -2295,11 +2337,15 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 setState(() => _ownerNotificationFilter = filter),
             selectedColor: BusGoTokens.blue,
             labelStyle: TextStyle(
-              color: selected ? Colors.white : BusGoTokens.navy,
+              color: selected
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w700,
             ),
             side: BorderSide(
-              color: selected ? BusGoTokens.blue : BusGoTokens.border,
+              color: selected
+                  ? BusGoTokens.blue
+                  : Theme.of(context).colorScheme.outlineVariant,
             ),
           );
         },
@@ -2311,7 +2357,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EFF7),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(14),
       ),
     );
@@ -2343,6 +2389,23 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           : '/owner/request-details'}',
     );
     debugPrint('[/BUSGO NOTIFICATION TAP]');
+    final conversationId = notification.conversationId?.trim();
+    if (conversationId != null &&
+        conversationId.isNotEmpty &&
+        (normalized == 'support_reply' ||
+            normalized == 'owner_message' ||
+            normalized == 'customer_message')) {
+      if (conversationId != recipientId) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You cannot access this support conversation.'),
+          ),
+        );
+        return;
+      }
+      context.push('/support/$conversationId');
+      return;
+    }
 
     if (isBusNotification) {
       if (busId == null || busId.isEmpty) {
@@ -2537,6 +2600,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         ? 'Not provided'
         : user.email.trim();
     final phone = phoneValue.isEmpty ? 'Not provided' : phoneValue;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return StreamBuilder<List<BusModel>>(
       stream: context.read<BusRepository>().watchForOwner(user.uid),
@@ -2557,16 +2621,16 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             Text(
               'Profile',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: BusGoTokens.navy,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w900,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               'Manage your profile, fleet, and account settings',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 18),
             BusGoSurface(
@@ -2589,7 +2653,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: BusGoTokens.navy,
+                                color: colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
@@ -2600,7 +2664,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
-                                color: BusGoTokens.muted,
+                                color: colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -2611,14 +2675,14 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEAF2FF),
+                            color: colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(999),
                           ),
                           child: Text(
                             user.role.label,
                             style: Theme.of(context).textTheme.labelLarge
                                 ?.copyWith(
-                                  color: BusGoTokens.blue,
+                                  color: colorScheme.onPrimaryContainer,
                                   fontWeight: FontWeight.w800,
                                 ),
                           ),
@@ -2633,10 +2697,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             _profileSection(
               title: 'Personal Information',
               icon: Icons.person_outline_rounded,
-              trailing: const Icon(
-                Icons.edit_outlined,
-                color: BusGoTokens.blue,
-              ),
+              trailing: Icon(Icons.edit_outlined, color: colorScheme.primary),
               onTap: () => context.push('/edit-profile'),
               children: [
                 _profileInfoRow(
@@ -2735,6 +2796,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     required String label,
     required String value,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 11),
       child: Row(
@@ -2744,10 +2806,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
             width: 34,
             height: 34,
             decoration: BoxDecoration(
-              color: const Color(0xFFEAF2FF),
+              color: colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 17, color: BusGoTokens.blue),
+            child: Icon(icon, size: 17, color: colorScheme.primary),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -2757,7 +2819,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                 Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: BusGoTokens.muted,
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -2767,7 +2829,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -2786,6 +2848,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     Widget? trailing,
     VoidCallback? onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -2800,17 +2863,17 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEAF2FF),
+                    color: colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, color: BusGoTokens.blue),
+                  child: Icon(icon, color: colorScheme.primary),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     title,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -2832,6 +2895,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
@@ -2843,10 +2907,10 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF2FF),
+                color: colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: BusGoTokens.blue),
+              child: Icon(icon, color: colorScheme.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -2856,7 +2920,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: colorScheme.onSurface,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -2864,14 +2928,14 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: BusGoTokens.muted,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: BusGoTokens.blue),
+            Icon(Icons.chevron_right_rounded, color: colorScheme.primary),
           ],
         ),
       ),
@@ -2879,18 +2943,21 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
   }
 
   Widget _profileHeaderRow(AuthProvider authProvider, String displayName) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BusGoBrandMark(compact: true),
+              BusGoBrandMark(compact: true, light: isDark),
               const SizedBox(height: 6),
               Text(
                 'Travel Together, Go Further',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: BusGoTokens.muted,
+                  color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -2916,8 +2983,8 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   icon: const Icon(Icons.notifications_none_rounded),
                   tooltip: 'Notifications',
                   style: IconButton.styleFrom(
-                    backgroundColor: const Color(0xFFEAF8F8),
-                    foregroundColor: BusGoTokens.blue,
+                    backgroundColor: colorScheme.primaryContainer,
+                    foregroundColor: colorScheme.primary,
                   ),
                 ),
                 if (unreadCount > 0)
@@ -2927,7 +2994,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2F80ED),
+                        color: colorScheme.primary,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2),
                       ),
@@ -2965,6 +3032,9 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
   }
 
   Widget _logoutCard(AuthProvider authProvider) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return InkWell(
       onTap: authProvider.isBusy
           ? null
@@ -2998,9 +3068,15 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFF1F1),
+          color: isDark
+              ? colorScheme.errorContainer.withValues(alpha: 0.22)
+              : const Color(0xFFFFF1F1),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFFFD4D4)),
+          border: Border.all(
+            color: isDark
+                ? colorScheme.error.withValues(alpha: 0.7)
+                : const Color(0xFFFFD4D4),
+          ),
         ),
         child: Row(
           children: [
@@ -3008,10 +3084,17 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: const Color(0xFFFFE7E7),
+                color: isDark
+                    ? colorScheme.errorContainer
+                    : const Color(0xFFFFE7E7),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.logout_rounded, color: Color(0xFFD92D20)),
+              child: Icon(
+                Icons.logout_rounded,
+                color: isDark
+                    ? colorScheme.onErrorContainer
+                    : const Color(0xFFD92D20),
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -3021,20 +3104,27 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
                   Text(
                     'Logout',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: const Color(0xFFD92D20),
+                      color: isDark
+                          ? colorScheme.onSurface
+                          : const Color(0xFFD92D20),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
                     'Sign out from your account',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFFB42318),
+                      color: isDark
+                          ? colorScheme.onSurfaceVariant
+                          : const Color(0xFFB42318),
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right_rounded, color: Color(0xFFD92D20)),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: isDark ? colorScheme.onSurface : const Color(0xFFD92D20),
+            ),
           ],
         ),
       ),
@@ -3048,7 +3138,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
         Container(
           height: 260,
           decoration: BoxDecoration(
-            color: const Color(0xFFE8EFF7),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(20),
           ),
         ),
@@ -3057,7 +3147,7 @@ class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
           Container(
             height: 72,
             decoration: BoxDecoration(
-              color: const Color(0xFFE8EFF7),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(18),
             ),
           ),
@@ -3351,7 +3441,9 @@ class _BusCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
-                                  color: BusGoTokens.navy,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontWeight: FontWeight.w900,
                                 ),
                           ),
@@ -3391,9 +3483,9 @@ class _BusCard extends StatelessWidget {
                           : bus.registrationNumber,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 7),
                     Wrap(
@@ -3449,9 +3541,9 @@ class _BusCard extends StatelessWidget {
             'Added ${_fleetDate(bus.createdAt)}  |  Updated ${_fleetDate(bus.updatedAt)}',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 10),
           Row(
@@ -3533,12 +3625,16 @@ class _BusCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 15, color: BusGoTokens.muted),
+        Icon(
+          icon,
+          size: 15,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
         const SizedBox(width: 4),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: BusGoTokens.muted,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -3576,7 +3672,7 @@ class _BusCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
-                                color: BusGoTokens.navy,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w900,
                               ),
                         ),
@@ -3761,7 +3857,7 @@ class _RequestCard extends StatelessWidget {
                 width: 46,
                 height: 52,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEAF2FF),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Column(
@@ -3777,8 +3873,8 @@ class _RequestCard extends StatelessWidget {
                     ),
                     Text(
                       '${request.startDate.day}',
-                      style: const TextStyle(
-                        color: BusGoTokens.navy,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                       ),
@@ -3796,7 +3892,7 @@ class _RequestCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -3864,7 +3960,7 @@ class _RequestCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -3883,9 +3979,9 @@ class _RequestCard extends StatelessWidget {
               'Requirements: ${request.specialRequirements}',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
           const SizedBox(height: 10),
@@ -3895,7 +3991,7 @@ class _RequestCard extends StatelessWidget {
                 child: Text(
                   'Amount: ₹${request.estimatedAmount.toStringAsFixed(0)}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -3980,7 +4076,7 @@ class _RequestCard extends StatelessWidget {
                 width: 42,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEAF2FF),
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -3996,8 +4092,8 @@ class _RequestCard extends StatelessWidget {
                     ),
                     Text(
                       '${request.startDate.day}',
-                      style: const TextStyle(
-                        color: BusGoTokens.navy,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
                       ),
@@ -4015,7 +4111,7 @@ class _RequestCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: BusGoTokens.navy,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -4108,7 +4204,11 @@ class _RequestCard extends StatelessWidget {
   Widget _requestMeta(BuildContext context, IconData icon, String value) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: BusGoTokens.muted),
+        Icon(
+          icon,
+          size: 14,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
         const SizedBox(width: 5),
         Expanded(
           child: Text(
@@ -4116,7 +4216,7 @@ class _RequestCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: BusGoTokens.muted,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -4245,7 +4345,7 @@ class _OwnerTripCard extends StatelessWidget {
               child: bus == null
                   ? Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEAF8F8),
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Icon(
@@ -4270,7 +4370,7 @@ class _OwnerTripCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: BusGoTokens.navy,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -4280,25 +4380,25 @@ class _OwnerTripCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: BusGoTokens.muted,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     '${request.passengerCount} passengers',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     customerLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   BusGoStatusChip(label: status.$1, tone: status.$4),
@@ -4312,7 +4412,7 @@ class _OwnerTripCard extends StatelessWidget {
                 Text(
                   '₹${request.estimatedAmount.toStringAsFixed(0)}',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: BusGoTokens.navy,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
@@ -4424,6 +4524,7 @@ class _OwnerNotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final normalizedType = notification.type.toLowerCase();
     final color = _colorForType(normalizedType);
     final title = notification.title.trim().isEmpty
@@ -4443,11 +4544,13 @@ class _OwnerNotificationCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: notification.isRead ? Colors.white : const Color(0xFFF4F9FF),
+          color: notification.isRead
+              ? colorScheme.surfaceContainer
+              : colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: notification.isRead
-                ? BusGoTokens.border
+                ? Theme.of(context).colorScheme.outlineVariant
                 : BusGoTokens.blue.withValues(alpha: 0.28),
           ),
           boxShadow: const [
@@ -4485,7 +4588,7 @@ class _OwnerNotificationCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(
-                                color: BusGoTokens.navy,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: notification.isRead
                                     ? FontWeight.w700
                                     : FontWeight.w900,
@@ -4496,7 +4599,7 @@ class _OwnerNotificationCard extends StatelessWidget {
                       Text(
                         timeLabel,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: BusGoTokens.muted,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -4506,9 +4609,9 @@ class _OwnerNotificationCard extends StatelessWidget {
                     message,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: BusGoTokens.muted),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                   ),
                   if (bookingReference != null &&
                       bookingReference.trim().isNotEmpty) ...[

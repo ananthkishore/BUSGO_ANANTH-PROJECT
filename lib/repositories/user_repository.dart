@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 import '../core/errors/auth_failure.dart';
 import '../core/utils/auth_exception_mapper.dart';
+import '../core/utils/profile_image_storage.dart';
 import '../models/user_model.dart';
 import 'notification_repository.dart';
 import '../models/notification_model.dart';
@@ -86,15 +87,20 @@ class UserRepository {
     String? profileImageUrl,
   }) async {
     try {
+      final normalizedImageUrl = sanitizeProfileImageUrl(profileImageUrl);
       final data = {
         'name': name.trim(),
         'email': email.trim(),
         'phone': phone,
-        'profileImageUrl': profileImageUrl,
+        'profileImageUrl': normalizedImageUrl,
+        'profileImage': normalizedImageUrl,
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      await _firestore.collection('users').doc(uid).update(data);
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .set(data, SetOptions(merge: true));
     } on FirebaseException catch (e) {
       throw AuthFailure(AuthExceptionMapper.fromFirestore(e));
     }

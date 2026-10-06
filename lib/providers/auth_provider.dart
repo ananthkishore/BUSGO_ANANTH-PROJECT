@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import '../core/constants/app_roles.dart';
 import '../core/errors/auth_failure.dart';
 import '../core/utils/auth_exception_mapper.dart';
+import '../core/utils/profile_image_storage.dart';
 import '../models/user_model.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/user_repository.dart';
@@ -29,6 +30,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isBusy => _isBusy;
   AppUser? get currentUser => _currentUser;
+  String? get authenticatedUid => _authRepository.currentUser?.uid;
   bool get isAuthenticated =>
       _authRepository.currentUser != null && _currentUser != null;
   String? get errorMessage => _errorMessage;
@@ -220,13 +222,28 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProfile({required String name, String? phone}) async {
+  Future<void> updateProfile({
+    required String name,
+    String? phone,
+    String? profileImageUrl,
+  }) async {
     final currentUser = _currentUser;
     if (currentUser == null) {
       throw const AuthFailure('Your profile is not available right now.');
     }
+    if (_authRepository.currentUser?.uid != currentUser.uid) {
+      throw const AuthFailure(
+        'Your signed-in account changed. Please sign in again.',
+      );
+    }
 
     final sanitizedPhone = (phone ?? '').trim();
+    final nextProfileImageUrl = profileImageUrl == null
+        ? currentUser.profileImageUrl
+        : sanitizeProfileImageUrl(profileImageUrl);
+    if (profileImageUrl != null && nextProfileImageUrl == null) {
+      throw const AuthFailure('The selected profile image URL is invalid.');
+    }
     final nextUser = AppUser(
       uid: currentUser.uid,
       name: name.trim(),
@@ -234,7 +251,7 @@ class AuthProvider extends ChangeNotifier {
       phone: sanitizedPhone.isEmpty ? null : sanitizedPhone,
       role: currentUser.role,
       approvalStatus: currentUser.approvalStatus,
-      profileImageUrl: currentUser.profileImageUrl,
+      profileImageUrl: nextProfileImageUrl,
       createdAt: currentUser.createdAt,
       updatedAt: DateTime.now(),
     );
@@ -247,27 +264,17 @@ class AuthProvider extends ChangeNotifier {
       profileImageUrl: nextUser.profileImageUrl,
     );
 
-    _currentUser = nextUser;
-    notifyListeners();
-  }
-
-  Future<void> uploadProfileImage({required String imageUrl}) async {
-    final currentUser = _currentUser;
-    if (currentUser == null) {
-      throw const AuthFailure('Your profile is not available right now.');
+    final persistedUser = await _userRepository.getUserByUid(currentUser.uid);
+    if (persistedUser == null ||
+        persistedUser.profileImageUrl != nextUser.profileImageUrl) {
+      throw const AuthFailure(
+        'Your profile update could not be confirmed. Please retry.',
+      );
     }
 
-    await _userRepository.updateUserProfile(
-      uid: currentUser.uid,
-      name: currentUser.name,
-      email: currentUser.email,
-      phone: currentUser.phone,
-      profileImageUrl: imageUrl,
-    );
-
-    _currentUser = currentUser.copyWith(
-      profileImageUrl: imageUrl,
-      updatedAt: DateTime.now(),
+    _currentUser = persistedUser;
+    debugPrint(
+      '[PROFILE IMAGE] Firestore profile reloaded and provider synchronized',
     );
     notifyListeners();
   }

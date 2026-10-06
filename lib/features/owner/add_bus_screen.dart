@@ -198,7 +198,7 @@ class _AddBusScreenState extends State<AddBusScreen> {
         : ownerName[0].toUpperCase();
 
     return Scaffold(
-      backgroundColor: BusGoTokens.canvas,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -221,7 +221,9 @@ class _AddBusScreenState extends State<AddBusScreen> {
                               'Travel Together, Go Further',
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    color: BusGoTokens.muted,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
@@ -253,7 +255,9 @@ class _AddBusScreenState extends State<AddBusScreen> {
                               'Add New Bus',
                               style: Theme.of(context).textTheme.headlineMedium
                                   ?.copyWith(
-                                    color: BusGoTokens.navy,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                     fontWeight: FontWeight.w900,
                                   ),
                             ),
@@ -261,7 +265,11 @@ class _AddBusScreenState extends State<AddBusScreen> {
                             Text(
                               'Enter your bus details to submit for approval',
                               style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(color: BusGoTokens.muted),
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
+                                  ),
                             ),
                           ],
                         ),
@@ -357,7 +365,9 @@ class _AddBusScreenState extends State<AddBusScreen> {
                         Text(
                           'Amenities',
                           style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(color: BusGoTokens.navy),
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         Wrap(
@@ -446,7 +456,11 @@ class _AddBusScreenState extends State<AddBusScreen> {
                         Text(
                           'Choose at least one suitable trip type',
                           style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: BusGoTokens.muted),
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         Wrap(

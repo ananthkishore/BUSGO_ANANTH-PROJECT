@@ -190,14 +190,16 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF6F9FF),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE3EBF8)),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
                       ),
                       child: Text(
                         request.specialRequirements,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: BusGoTokens.navy,
+                          color: Theme.of(context).colorScheme.onSurface,
                           height: 1.45,
                         ),
                       ),
@@ -212,13 +214,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   color: request.paymentStatus == PaymentStatus.submitted
-                      ? const Color(0xFFEAF6FF)
-                      : const Color(0xFFEAFBF2),
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).colorScheme.tertiaryContainer,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: request.paymentStatus == PaymentStatus.submitted
-                        ? const Color(0xFFBFDBFE)
-                        : const Color(0xFFCAF0D8),
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
                 child: Row(
@@ -255,8 +255,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   color:
                                       request.paymentStatus ==
                                           PaymentStatus.submitted
-                                      ? const Color(0xFF1D4ED8)
-                                      : const Color(0xFF0E7A52),
+                                      ? Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.onTertiaryContainer,
                                 ),
                           ),
                           const SizedBox(height: 6),
@@ -269,8 +273,12 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                                   color:
                                       request.paymentStatus ==
                                           PaymentStatus.submitted
-                                      ? const Color(0xFF1D4ED8)
-                                      : const Color(0xFF2E7D5B),
+                                      ? Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer
+                                      : Theme.of(
+                                          context,
+                                        ).colorScheme.onTertiaryContainer,
                                 ),
                           ),
                         ],
@@ -361,7 +369,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                       Text(
                         _request.reviewFeedback ?? '',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: BusGoTokens.navy,
+                          color: Theme.of(context).colorScheme.onSurface,
                           height: 1.5,
                         ),
                       ),
@@ -370,7 +378,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                     Text(
                       'Thanks for giving feedback!',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: BusGoTokens.muted,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -418,7 +426,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                               active
                                   ? Icons.star_rounded
                                   : Icons.star_border_rounded,
-                              color: active ? Colors.amber : BusGoTokens.muted,
+                              color: active
+                                  ? Colors.amber
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                               size: 28,
                             ),
                           ),
@@ -595,8 +607,8 @@ class _TimelineRow extends StatelessWidget {
         ? BusGoTokens.blue.withValues(alpha: 0.35)
         : const Color(0xFFCDD6E4);
     final textColor = isDone || isCurrent
-        ? BusGoTokens.navy
-        : BusGoTokens.muted;
+        ? Theme.of(context).colorScheme.onSurface
+        : Theme.of(context).colorScheme.onSurfaceVariant;
 
     return IntrinsicHeight(
       child: Row(
@@ -765,9 +777,11 @@ class _SummaryCard extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF6F9FF),
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFE3EBF8)),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -828,7 +842,7 @@ class _InfoPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F7FF),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
@@ -839,7 +853,7 @@ class _InfoPill extends StatelessWidget {
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: BusGoTokens.navy,
+              color: Theme.of(context).colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),

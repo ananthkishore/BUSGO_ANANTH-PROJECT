@@ -10,8 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flutter_application_12/app/app.dart';
+import 'package:flutter_application_12/app/theme.dart';
 import 'package:flutter_application_12/core/constants/app_roles.dart';
 import 'package:flutter_application_12/models/notification_model.dart';
+import 'package:flutter_application_12/features/auth/forgot_password_screen.dart';
 import 'package:flutter_application_12/features/auth/login_screen.dart';
 import 'package:flutter_application_12/features/auth/register_screen.dart';
 import 'package:flutter_application_12/features/owner/bus_management_details_screen.dart';
@@ -52,6 +55,29 @@ void main() {
 
     expect(find.text('BUSGO'), findsOneWidget);
     expect(find.byIcon(Icons.directions_bus_filled_rounded), findsOneWidget);
+  });
+
+  testWidgets('theme changes do not recreate the app router', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const BusGoApp());
+
+    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    final routerBefore = materialApp.routerConfig;
+
+    final themeController = tester
+        .element(find.byType(MaterialApp))
+        .read<BusGoThemeController>();
+    await themeController.setThemeMode(ThemeMode.dark);
+    await tester.pump();
+
+    final materialAppAfter = tester.widget<MaterialApp>(
+      find.byType(MaterialApp),
+    );
+    final routerAfter = materialAppAfter.routerConfig;
+
+    expect(identical(routerBefore, routerAfter), isTrue);
+    expect(themeController.themeMode, ThemeMode.dark);
   });
 
   testWidgets('role selector opens the three BUSGO roles', (
@@ -103,6 +129,22 @@ void main() {
     expect(find.text('Create Account'), findsOneWidget);
     expect(find.text('Join BUSGO and start your journey.'), findsOneWidget);
     expect(find.text('LOGIN'), findsOneWidget);
+  });
+
+  testWidgets('forgot password screen uses the polished reset flow', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => AuthProvider(),
+        child: const MaterialApp(home: ForgotPasswordScreen()),
+      ),
+    );
+
+    expect(find.text('Forgot your password?'), findsOneWidget);
+    expect(find.text('Reset your password'), findsOneWidget);
+    expect(find.text('Send reset link'), findsOneWidget);
+    expect(find.text('Back to login'), findsOneWidget);
   });
 
   test('notification model resolves legacy booking and bus ids', () {
